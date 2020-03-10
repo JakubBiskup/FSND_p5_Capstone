@@ -37,21 +37,27 @@
                 float:left;
             }
             .admins {
-                float:none
+                float: right;
+                margin: 30px;
             }
             .somemembers {
-                float:right
+                float:right;
+                margin: 30px;
             }
             .events {
-                position: fixed;
-                bottom: 0;
+                position: relative;
+                margin-top:500px;
                 width: 90%;
+                overflow: hidden;
+            }
+            .centercontent {
+                position: relative;
             }
         </style>
     </head>
     <body>
         <div class="topnav">
-            <a href="somelink">Games collection</a>
+            <a href="/clubcollection">Games collection</a>
             <a href="somelink">Members</a>
             <a href="somelink">Events</a>
             <button class="topright button" onclick="window.location.href = 'auth0link';">Log In / Log out</button>
