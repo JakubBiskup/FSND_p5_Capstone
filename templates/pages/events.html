@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <title>
+            All events
+        </title>
+        <style>
+            .topnav {
+                background-color: rgb(46, 139, 46);
+                overflow: hidden;
+            }
+            .topnav a {
+                float: left;
+                color: #f2f2f2;
+                text-align: center;
+                padding: 1 20;
+                text-decoration: none;
+                font-size: 240%;
+            }
+            a.topright {
+                color:red;
+                float: right;
+
+            }
+            button.topright {
+                color:red;
+                float: right;
+
+            }
+            .tableofevents, td, th {
+                border-collapse: collapse;
+                border: 2px solid black;
+            }
+            td {
+                padding: 5px;
+                text-align: left;    
+                }
+            th {
+                font-size: x-large;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="topnav">
+            <a href="/clubcollection">Games collection</a>
+            <a href="/allmembers">Members</a>
+            <a href="/allevents">Events</a>
+            <a href="/">Home</a>
+            <button class="topright button" onclick="window.location.href = 'auth0link';">Log In / Log out</button>
+            <a href="somelink" class="topright">my profile</a>
+        </div>
+        <div class="searchevent">
+            <p>Search for an event:</p>
+            <form class="search" method="post" action="/events/search">
+                <input class="form-control"
+                  type="search"
+                  name="search_term"
+                  placeholder="Find an event">
+              </form>
+        </div>
+        <div class="future">
+            <h1>FUTURE EVENTS</h1>
+            <table class="tableofevents">
+                <th>Event name</th>
+                <th>Host</th>
+                <th>Game(s)</th>
+                <th>Seats Taken</th>
+                <th>Location</th>
+                <th>Time</th>
+                <tr>
+                    <td><a href="eventpage">GoT night</a></td>
+                    <td><a href="hostpage">hostusername</a></td>
+                    <td><a href="bgglink">game B</a>, <a href="bgglink">game B</a></td>
+                    <td>3/6</td>
+                    <td>host's house, Zabrze Kownacki street 56, wooden house by the lake</td>
+                    <td>27.09.2030r. 22:00</td>
+                </tr>
+                <tr>
+                    <td><a href="eventpage">Gambit meeting</a></td>
+                    <td><a href="hostpage">host2username</a></td>
+                    <td><a href="bgglink">TBD</a></td>
+                    <td>9/25</td>
+                    <td>MDK Gliwice</td>
+                    <td>27.09.2021r. 17:00</td>
+                </tr>
+            </table>
+        </div>
+        <h1>PAST EVENTS</h1>
+            <table class="tableofevents">
+                <th>Event name</th>
+                <th>Host</th>
+                <th>Game(s)</th>
+                <th>Players</th>
+                <th>Location</th>
+                <th>Time</th>
+                <tr>
+                    <td><a href="eventpage">GoT night</a></td>
+                    <td><a href="hostpage">hostusername</a></td>
+                    <td><a href="bgglink">game B</a>, <a href="bgglink">game B</a></td>
+                    <td>3</td>
+                    <td>host's house, Zabrze Kownacki street 56, wooden house by the lake</td>
+                    <td>27.09.2003r. 22:00</td>
+                </tr>
+                <tr>
+                    <td><a href="eventpage">Gambit meeting</a></td>
+                    <td><a href="hostpage">host2username</a></td>
+                    <td><a href="bgglink">Some Game Title</a></td>
+                    <td>19</td>
+                    <td>MDK Gliwice</td>
+                    <td>27.09.2001r. 17:00</td>
+                </tr>
+                <tr>
+                    <td><a href="eventpage">Gambit meeting</a></td>
+                    <td><a href="hostpage">host2username</a></td>
+                    <td><a href="bgglink">Some Game Title</a></td>
+                    <td>19</td>
+                    <td>MDK Gliwice</td>
+                    <td>27.09.2001r. 17:00</td>
+                </tr>
+                <tr>
+                    <td><a href="eventpage">Gambit meeting</a></td>
+                    <td><a href="hostpage">host2username</a></td>
+                    <td><a href="bgglink">Some Game Title</a></td>
+                    <td>19</td>
+                    <td>MDK Gliwice</td>
+                    <td>27.09.2001r. 17:00</td>
+                </tr>
+                <tr>
+                    <td><a href="eventpage">Gambit meeting</a></td>
+                    <td><a href="hostpage">host2username</a></td>
+                    <td><a href="bgglink">Some Game Title</a></td>
+                    <td>19</td>
+                    <td>MDK Gliwice</td>
+                    <td>27.09.2001r. 17:00</td>
+                </tr>
+                <tr>
+                    <td><a href="eventpage">Gambit meeting</a></td>
+                    <td><a href="hostpage">host2username</a></td>
+                    <td><a href="bgglink">Some Game Title</a></td>
+                    <td>19</td>
+                    <td>MDK Gliwice</td>
+                    <td>27.09.2001r. 17:00</td>
+                </tr>
+                <tr>
+                    <td><a href="eventpage">Gambit meeting</a></td>
+                    <td><a href="hostpage">host2username</a></td>
+                    <td><a href="bgglink">Some Game Title</a></td>
+                    <td>19</td>
+                    <td>MDK Gliwice</td>
+                    <td>27.09.2001r. 17:00</td>
+                </tr>
+            </table>
+        </div>
+
+    </body>
+</html>
