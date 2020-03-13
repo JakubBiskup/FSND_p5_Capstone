@@ -1,109 +1,64 @@
-<html>
-    <head>
-        <title>Club Members</title>
-        <style>
-            .topnav {
-                background-color: rgb(46, 139, 46);
-                overflow: hidden;
-            }
-            .topnav a {
-                float: left;
-                color: #f2f2f2;
-                text-align: center;
-                padding: 1 20;
-                text-decoration: none;
-                font-size: 240%;
-            }
-            a.topright {
-                color:red;
-                float: right;
-
-            }
-            button.topright {
-                color:red;
-                float: right;
-            }
-            .tableofmembers, td, th {
-                border-collapse: collapse;
-                border: 2px solid black;
-            }
-            td {
-                padding: 5px;
-                text-align: left;    
-                }
-            th {
-                font-size: x-large;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="topnav">
-            <a href="/clubcollection">Games collection</a>
-            <a href="/allmembers">Members</a>
-            <a href="somelink">Events</a>
-            <a href="/">Home</a>
-            <button class="topright button" onclick="window.location.href = 'auth0link';">Log In / Log out</button>
-            <a href="somelink" class="topright">my profile</a>
-        </div>
-        <div class="searchmember">
-            <p>Search for a member:</p>
-            <form class="search" method="post" action="/members/search">
-                <input class="form-control"
-                  type="search"
-                  name="search_term"
-                  placeholder="Find a member">
-              </form>
-        </div>
-        <div>
-            <h2>Our club currently has 8 members</h2>
-        </div>
-        <div class="memberstable">
-            <table class="tableofmembers">
-                <th>Title</th>
-                <th>Owner(s)</th>
-                <th>Rank</th>
-                <tr>
-                    <td><a href="userpagelink">adminusername1</a></td>
-                    <td><p>Club founder, he likes bord games a lot</p></td>
-                    <td>Admin</td>
-                </tr>
-                <tr>
-                    <td><a href="userpagelink">adminusername2</a></td>
-                    <td><p>likes board games very much, some of his favourites are Tic Tac Toe 2049 and Checkers. Member since 2009. Friendly guy that also likes hiking and other stuff. Currently living in Katowice. Here's more text about him: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Our club blah blah blah ... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Our club blah blah blah ... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></td>
-                    <td>Admin</td>
-                </tr>
-                <tr>
-                    <td><a href="userpagelink">somememberusername1</a></td>
-                    <td><p>some text provided by this member or some admin</p></td>
-                    <td>Member</td>
-                </tr>
-                <tr>
-                    <td><a href="userpagelink">somememberusername1</a></td>
-                    <td><p>some text provided by this member or some admin</p></td>
-                    <td>Member</td>
-                </tr>
-                <tr>
-                    <td><a href="userpagelink">somememberusername1</a></td>
-                    <td><p>some text provided by this member or some admin</p></td>
-                    <td>Member</td>
-                </tr>
-                <tr>
-                    <td><a href="userpagelink">somememberusername1</a></td>
-                    <td><p>some text provided by this member or some admin</p></td>
-                    <td>Member</td>
-                </tr>
-                <tr>
-                    <td><a href="userpagelink">somememberusername1</a></td>
-                    <td><p>some text provided by this member or some admin</p></td>
-                    <td>Member</td>
-                </tr>
-                <tr>
-                    <td><a href="userpagelink">somememberusername1</a></td>
-                    <td><p>some text provided by this member or some admin</p></td>
-                    <td>Member</td>
-                </tr>
-                
-            </table>
-        </div>
-    </body>
-</html>
+{% extends "layouts/base.html" %}
+{% block title %} Members {% endblock %}
+{% block content %}
+<div class="searchmember">
+    <p>Search for a member:</p>
+    <form class="search" method="post" action="/members/search">
+        <input class="form-control"
+          type="search"
+          name="search_term"
+          placeholder="Find a member">
+      </form>
+</div>
+<div>
+    <h2>Our club currently has 8 members</h2>
+</div>
+<div class="memberstable">
+    <table class="tableofmembers">
+        <th>Title</th>
+        <th>Owner(s)</th>
+        <th>Rank</th>
+        <tr>
+            <td><a href="userpagelink">adminusername1</a></td>
+            <td><p>Club founder, he likes board games a lot</p></td>
+            <td>Admin</td>
+        </tr>
+        <tr>
+            <td><a href="userpagelink">adminusername2</a></td>
+            <td><p>likes board games very much, some of his favourites are Tic Tac Toe 2049 and Checkers. Member since 2009. Friendly guy that also likes hiking and other stuff. Currently living in Katowice. Here's more text about him: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Our club blah blah blah ... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Our club blah blah blah ... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></td>
+            <td>Admin</td>
+        </tr>
+        <tr>
+            <td><a href="userpagelink">somememberusername1</a></td>
+            <td><p>some text provided by this member or some admin</p></td>
+            <td>Member</td>
+        </tr>
+        <tr>
+            <td><a href="userpagelink">somememberusername1</a></td>
+            <td><p>some text provided by this member or some admin</p></td>
+            <td>Member</td>
+        </tr>
+        <tr>
+            <td><a href="userpagelink">somememberusername1</a></td>
+            <td><p>some text provided by this member or some admin</p></td>
+            <td>Member</td>
+        </tr>
+        <tr>
+            <td><a href="userpagelink">somememberusername1</a></td>
+            <td><p>some text provided by this member or some admin</p></td>
+            <td>Member</td>
+        </tr>
+        <tr>
+            <td><a href="userpagelink">somememberusername1</a></td>
+            <td><p>some text provided by this member or some admin</p></td>
+            <td>Member</td>
+        </tr>
+        <tr>
+            <td><a href="userpagelink">somememberusername1</a></td>
+            <td><p>some text provided by this member or some admin</p></td>
+            <td>Member</td>
+        </tr>
+        
+    </table>
+</div>
+{% endblock %}

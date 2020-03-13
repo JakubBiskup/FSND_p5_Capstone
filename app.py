@@ -4,17 +4,17 @@ app=Flask(__name__)
 
 @app.route('/')
 def index():
-  return render_template('pages/homepage.html')
+  return render_template('pages/home.html')
 
-@app.route('/clubcollection')
+@app.route('/games/all')
 def get_all_games():
-  return render_template('pages/clubcollection.html')
+  return render_template('pages/allgames.html')
 
-@app.route('/allmembers')
+@app.route('/members/all')
 def get_all_members():
   return render_template('pages/members.html')
 
-@app.route('/allevents')
+@app.route('/events/all')
 def get_all_events():
   return render_template('pages/events.html')
 

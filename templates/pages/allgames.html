@@ -1,0 +1,42 @@
+{% extends "layouts/base.html" %}
+{% block title %} All Games {% endblock %}
+{% block content %}
+<div class="searchgame">
+    <p>Search for a game:</p>
+    <form class="search" method="post" action="/games/search">
+        <input class="form-control"
+          type="search"
+          name="search_term"
+          placeholder="Find a game">
+      </form>
+</div>
+<div>
+    <h2>Our club collection currently has 5 titles</h2>
+</div>
+<div class="gamestable">
+    <table class="tableofgames">
+        <th>Title</th>
+        <th>Owner(s)</th>
+        <tr>
+            <td><a href="bgglink">game A</a></td>
+            <td><a href="ownerpage">owner1</a></td>
+        </tr>
+        <tr>
+            <td><a href="bgglink">game B</a></td>
+            <td><a href="ownerpage">owner1</a>, <a href="ownerpage">owner2</a></td>
+        </tr>
+        <tr>
+            <td><a href="bgglink">game C</a></td>
+            <td><a href="ownerpage">owner1</a></td>
+        </tr>
+        <tr>
+            <td><a href="bgglink">game D</a></td>
+            <td><a href="ownerpage">owner1</a></td>
+        </tr>
+        <tr>
+            <td><a href="bgglink">game z</a></td>
+            <td><a href="ownerpage">owner1</a></td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
