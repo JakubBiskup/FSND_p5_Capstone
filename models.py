@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 
-db_name='cptest5'
+db_name='cptest6'
 db_path="postgres://postgres:123@{}/{}".format('localhost:5432', db_name)
 
 db=SQLAlchemy()
@@ -50,11 +50,12 @@ class Member(db.Model):
     member=db.Column(db.Boolean, default=False)
     description=db.Column(db.String(1000),nullable=True)
     auth0_user_id=db.Column(db.String(64),unique=True,nullable=False)
-    real_name=db.Column(db.String(120),nullable=True)
+    first_name=db.Column(db.String(64),nullable=True)
+    last_name=db.Column(db.String(64),nullable=True)
     phone=db.Column(db.String(30),nullable=True)
     email=db.Column(db.String(64),nullable=True)
 
-    address=db.Column(db.Integer, db.ForeignKey('location.id'), nullable=False)
+    address=db.Column(db.Integer, db.ForeignKey('location.id'), nullable=True)
 
     event_creation=db.relationship('Event', backref=db.backref('host'))
 
