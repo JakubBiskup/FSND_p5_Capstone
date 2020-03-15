@@ -1,23 +1,16 @@
+import os
 from flask import Flask, render_template, jsonify
 from models import db, db_path, setup_db, Game, Member, Location, Event
+from forms import *
+
+SECRET_KEY=os.urandom(32)
 
 app=Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = db_path
+app.config['SECRET_KEY']=SECRET_KEY
 
 setup_db(app, db_path)
-'''
-@app.route('/getfirstgame') ######test endpoint, delete later
-def get_first_game_from_db():
-  try:
-    games=Game.query.all()
-    game=games[0]
-    title=game.title
-    link=game.link
-  except Exception as e:
-    print(e)
-    return jsonify({'success':False}),500
-  return jsonify({'success':True,'title':title,'link':link}), 200
-'''
+
 @app.route('/')
 def index():
   return render_template('pages/home.html')
@@ -43,6 +36,11 @@ def get_userpage(member_id):
 def get_userpage_with_details(member_id):
   member=Member.query.filter_by(id=member_id).first()
   return render_template('pages/detaileduser.html', member=member)
+
+@app.route('/games/create')
+def get_game_form():
+  form=GameForm()
+  return render_template('forms/new_game.html', form=form)
 
 
 

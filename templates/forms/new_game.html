@@ -1,0 +1,19 @@
+{% extends "layouts/base.html" %}
+{% block title %} Add a new game {% endblock %}
+{% block content %}
+<h1>Add a new game to your collection</h1>
+<p>Please make sure that the game you are adding is not in club collection alredy.</p>
+<form action="" method="POST">
+    <p>
+        {{form.title.label}}<br>
+        {{form.title(size=40)}}
+    </p>
+    <p>
+        {{form.link.label}}<br>
+        {{form.link(size=40)}}
+    </p>
+    <p>
+        {{form.submit()}}
+    </p>
+</form>
+{% endblock %}
