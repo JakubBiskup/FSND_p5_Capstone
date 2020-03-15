@@ -83,5 +83,5 @@ class Location(db.Model):
     house_num=db.Column(db.String(10), nullable=False)
     appartment_num=db.Column(db.Integer, nullable=True)
 
-    habitat=db.relationship('Member', backref=db.backref('address'))
+    habitat=db.relationship('Member', backref=db.backref('home_address'))
     place=db.relationship('Event', backref=db.backref('location'))

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify
-from models import db, db_path, setup_db, Game
+from models import db, db_path, setup_db, Game, Member, Location, Event
 
 app=Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = db_path
@@ -33,6 +33,11 @@ def get_all_members():
 @app.route('/events/all')
 def get_all_events():
   return render_template('pages/events.html')
+
+@app.route('/members/<int:member_id>')
+def get_userpage(member_id):
+  member=Member.query.filter_by(id=member_id).first()
+  return render_template('pages/user.html', member=member)
 
 
 

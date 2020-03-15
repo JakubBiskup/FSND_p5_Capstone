@@ -1,0 +1,16 @@
+{% extends "layouts/base.html" %}
+{% block title %} {{member.username}} {% endblock %}
+{% block content %}
+<div class="topcontent">
+    <img class="profile_img" src='{{member.img_link}}' alt="profile image">
+    <h1 style="font-size: 6em;">{{member.username}}</h1>
+    <h3>Rank: {%+ if member.admin %}Admin {% endif %}{%+ if member.member %}member {% endif %}</h3>
+    <p>{{member.description}}</p>
+</div>
+<button style="background-color: brown;" onclick="window.location.href = 'members/{{member.id}}/detailed'">Get details (only for members)</button>
+<div class="user_collection">
+    <h2 style="font-size: 250%;">{{member.username}}'s games collection:</h2>
+    <ul>{% for game in member.ownership %}<li><a href='{{game.link}}''>{{game.title}}</li>{% endfor %}
+    </ul>
+</div>
+{% endblock %}
