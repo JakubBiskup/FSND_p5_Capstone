@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from models import db, db_path, setup_db, Game, Member, Location, Event
 from forms import *
 
@@ -41,6 +41,24 @@ def get_userpage_with_details(member_id):
 def get_game_form():
   form=GameForm()
   return render_template('forms/new_game.html', form=form)
+
+@app.route('/games/create', methods=['POST'])
+def create_game():
+  try:
+    title=request.form.get('title')
+    link=request.form.get('link')
+    new_game=Game(title=title,link=link)
+    current_user=Member.query.first()#####Change this query to get a user that is currently logged in 
+    new_game.owners.append(current_user)
+    db.session.add(new_game)
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return render_template('pages/user.html',member=Member.query.first())
+
 
 
 
