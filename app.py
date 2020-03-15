@@ -39,6 +39,11 @@ def get_userpage(member_id):
   member=Member.query.filter_by(id=member_id).first()
   return render_template('pages/user.html', member=member)
 
+@app.route('/members/<int:member_id>/detailed')
+def get_userpage_with_details(member_id):
+  member=Member.query.filter_by(id=member_id).first()
+  return render_template('pages/detaileduser.html', member=member)
+
 
 
 if __name__ == '__main__':
