@@ -1,0 +1,61 @@
+{% extends "layouts/base.html" %}
+{% block title %} Crete your account {% endblock %}
+{% block content %}
+<h1>Create your account</h1>
+<form action="" method="POST">
+    <p>
+        {{form.username.label}}<br>
+        {{form.username(size=40)}}
+    </p>
+    <p>
+        {{form.img_link.label}}<br>
+        {{form.img_link(size=40)}}
+    </p>
+    <p>
+        {{form.description.label}}<br>
+        {{form.description(size=120)}}
+    </p>
+    <h2> Personal Information</h2>
+    <p>
+        {{form.first_name.label}}<br>
+        {{form.first_name(size=40)}}
+    </p>
+    <p>
+        {{form.last_name.label}}<br>
+        {{form.last_name(size=40)}}
+    </p>
+    <p>
+        {{form.phone.label}}<br>
+        {{form.phone(size=30)}}
+    </p>
+    <p>
+        {{form.email.label}}<br>
+        {{form.email(size=40)}}
+    </p>
+    <h3>Home Address</h3>
+    <p>
+        {{form.country.label}}<br>
+        {{form.country(size=40)}}
+    </p>
+    <p>
+        {{form.city.label}}<br>
+        {{form.city(size=40)}}
+    </p>
+    <p>
+        {{form.street.label}}<br>
+        {{form.street(size=40)}}
+    </p>
+    <p>
+        {{form.house_num.label}}<br>
+        {{form.house_num(size=10)}}
+    </p>
+    <p>
+        {{form.appartment_num.label}}<br>
+        {{form.appartment_num(size=10)}}
+    </p>
+    <p>{{form.submit()}}</p>
+
+
+
+</form>
+{% endblock %}

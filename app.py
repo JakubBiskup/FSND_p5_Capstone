@@ -59,7 +59,10 @@ def create_game():
     db.session.close()
     return render_template('pages/user.html',member=Member.query.first())
 
-
+@app.route('/members/create')
+def get_user_form():
+  form=MemberForm()
+  return render_template('forms/new_user.html', form=form)
 
 
 if __name__ == '__main__':
