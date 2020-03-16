@@ -11,6 +11,12 @@ app.config['SECRET_KEY']=SECRET_KEY
 
 setup_db(app, db_path)
 
+#HELPERS#
+def get_current_user_auth0_id(): #######################implement this function later, for now it returns a fixed auth0userid string,
+  return 'auth0|5e29ce15b8c4470f0791790b'
+#
+
+
 @app.route('/')
 def index():
   return render_template('pages/home.html')
@@ -63,6 +69,38 @@ def create_game():
 def get_user_form():
   form=MemberForm()
   return render_template('forms/new_user.html', form=form)
+
+@app.route('/members/create', methods=["POST"])
+def create_user():
+  try:
+    username=request.form.get('username')
+    auth0_user_id=get_current_user_auth0_id()
+    
+    img_link=request.form.get('img_link')
+    description=request.form.get('description')
+    
+    first_name=request.form.get('first_name')
+    last_name=request.form.get('last_name')
+    phone=request.form.get('phone')
+    email=request.form.get('email')
+    #####TODO:get home address data
+    new_user=Member(username=username,img_link=img_link,auth0_user_id=auth0_user_id,description=description,first_name=first_name,last_name=last_name,phone=phone,email=email)
+    db.session.add(new_user)
+    #####TODO:create a new location ,naming it 'member's home if it doesnt exist already and set it as member's home address
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return render_template('pages/user.html', member=Member.query.filter_by(auth0_user_id=auth0_user_id).one_or_none())
+    
+    
+    
+    
+    
+    
+
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@
 <div class="topcontent">
     <img class="profile_img" src='{{member.img_link}}' alt="profile image">
     <h1 style="font-size: 6em;">{{member.username}}</h1>
-    <h3>Rank: {%+ if member.admin %}Admin {% endif %}{%+ if member.member %}member {% endif %}</h3>
+    <h3>Rank: {%+ if member.admin %}Admin {% endif %}{%+ if member.member %}member {% endif %}{%+ if not member.admin and not member.member %}guest {% endif %}</h3>
     <p>{{member.description}}</p>
 </div>
 <div class="centercontent">
