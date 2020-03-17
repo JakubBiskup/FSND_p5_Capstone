@@ -1,7 +1,7 @@
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, SubmitField
+from wtforms import IntegerField, StringField, SelectField, SelectMultipleField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, URL
-
+from wtforms.fields.html5 import DateTimeField
 
 class GameForm(Form):
     title=StringField('Title', validators=[DataRequired()])
@@ -25,5 +25,24 @@ class MemberForm(Form):
     appartment_num=StringField('Appartment Number')
 
     submit=SubmitField('Create your account')
+
+class EventForm(Form):
+    name=StringField('Event name', validators=[DataRequired()])
+    time=DateTimeField('Time',  format='%Y-%m-%d %H:%M', validators=[DataRequired()])
+    location=SelectField('Location', choices=[])
+    max_players=IntegerField('Players max number',validators=[DataRequired()])
+    games=SelectMultipleField('Games (ctrl+click to choose multiple)', choices=[])
+    description=StringField('Description')
+    
+    location_name=StringField('Name of the new location')
+    country=StringField('Country')
+    city=StringField('City')
+    street=StringField('Street')
+    house_num=StringField('House Number')
+    appartment_num=StringField('Appartment Number')
+
+    submit=SubmitField('Create event')
+
+
 
 

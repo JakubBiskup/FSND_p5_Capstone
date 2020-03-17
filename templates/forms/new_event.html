@@ -1,0 +1,65 @@
+{% extends "layouts/base.html" %}
+{% block title %} Create Event {% endblock %}
+{% block content %}
+<h1>Create new event</h1>
+
+<form action="" method="POST">
+    <p>
+        {{form.name.label}}<br>
+        {{form.name(size=40)}}
+    </p>
+    <p>
+        {{form.description.label}}<br>
+        {{form.description(size=200)}}
+    </p>
+    <p>
+        {{form.time.label}}<br>
+        {{form.time(placeholder="YYYY-MM-DD hh:mm")}}
+    </p>
+    <p>
+        {{form.games.label}}<br>
+        {{form.games()}}
+    </p>
+    <p>
+        {{form.max_players.label}}<br>
+        {{form.max_players(size=40)}}
+    </p>
+    <p>
+        {{form.location.label}}<br>
+        {{form.location()}}
+    </p>
+    <h3>New location</h3>
+    <p>(leave  these fields blank unless your event will take place at a new location)</p>
+    <p>
+        {{form.location_name.label}}<br>
+        {{form.location_name(size=40)}}
+    </p>
+    <p>
+        {{form.country.label}}<br>
+        {{form.country(size=40)}}
+    </p>
+    <p>
+        {{form.city.label}}<br>
+        {{form.city(size=40)}}
+    </p>
+    <p>
+        {{form.street.label}}<br>
+        {{form.street(size=40)}}
+    </p>
+    <p>
+        {{form.house_num.label}}<br>
+        {{form.house_num(size=10)}}
+    </p>
+    <p>
+        {{form.appartment_num.label}}<br>
+        {{form.appartment_num(size=10)}}
+    </p>
+
+
+
+
+    <p>
+        {{form.submit(size=40)}}
+    </p>
+</form>
+{% endblock %}

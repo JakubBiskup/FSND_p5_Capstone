@@ -13,7 +13,7 @@ setup_db(app, db_path)
 
 #HELPERS#
 def get_current_user_auth0_id(): #######################implement this function later, for now it returns a fixed auth0userid string,
-  return 'auth0|5e29ce15b8c4470f0791790b'
+  return 'auth0|5e6e431710d6ee0c8edc675e'
 #
 
 
@@ -95,7 +95,40 @@ def create_user():
     db.session.close()
     return render_template('pages/user.html', member=Member.query.filter_by(auth0_user_id=auth0_user_id).one_or_none())
     
+@app.route('/events/create')
+def get_event_form():
+  form=EventForm()
+  form.location.choices=[(l.id, l.name) for l in Location.query.all()]
+  form.location.choices.append((0,'a new location'))
+  form.games.choices=[(g.id, g.title) for g in Game.query.all()]
+  return render_template('forms/new_event.html', form=form)
+
+@app.route('/events/create', methods=["POST"])
+def create_event():
+  try:
+    name=request.form.get('name')
+    time=request.form.get('time')
+    max_players=request.form.get('max_players')
+    description=request.form.get('description')
+    host_id=1#####
+    players=[Member.query.filter_by(auth0_user_id=get_current_user_auth0_id()).one_or_none()]
+    location_id=request.form.get('location')
+    ####TODO:implement creating a new location
+    games=[Game.query.filter_by(id=game_id).one_or_none() for game_id in request.form.getlist('games')]
     
+    new_event=Event(name=name,time=time,max_players=max_players,host_id=host_id,location_id=location_id,description=description)
+    db.session.add(new_event)
+    new_event.players=players
+    new_event.games=games
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return render_template('pages/events.html')
+
+
     
     
     
