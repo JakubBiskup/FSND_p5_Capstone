@@ -33,6 +33,13 @@ def get_all_members():
 def get_all_events():
   return render_template('pages/events.html')
 
+@app.route('/events/<int:event_id>')
+def get_event_page(event_id):
+  event=Event.query.filter_by(id=event_id).first()
+  current_players=event.players##
+  current_players_num=len(current_players)##
+  return render_template('pages/event.html', event=event, current_players_num=current_players_num)
+
 @app.route('/members/<int:member_id>')
 def get_userpage(member_id):
   member=Member.query.filter_by(id=member_id).first()
