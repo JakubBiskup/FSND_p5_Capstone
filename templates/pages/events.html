@@ -19,22 +19,17 @@
         <th>Seats Taken</th>
         <th>Location</th>
         <th>Time</th>
+        {% for event in future %}
+        
         <tr>
-            <td><a href="eventpage">GoT night</a></td>
-            <td><a href="hostpage">hostusername</a></td>
-            <td><a href="bgglink">game B</a>, <a href="bgglink">game B</a></td>
-            <td>3/6</td>
-            <td>host's house, Zabrze Kownacki street 56, wooden house by the lake</td>
-            <td>27.09.2030r. 22:00</td>
+            <td><a href="/events/{{event.id}}">{{event.name}}</a></td>
+            <td><a href="/members/{{event.host.id}}">{{event.host.username}}</a></td>
+            <td>{% for game in event.games %}<a href="{{game.link}}">{{game.title}}</a>    {% endfor %}</td>
+            <td>{{joined[event.name]}}/{{event.max_players}}</td>
+            <td>{{event.location.name}}</td>
+            <td>{{event.time}}</td>
         </tr>
-        <tr>
-            <td><a href="eventpage">Gambit meeting</a></td>
-            <td><a href="hostpage">host2username</a></td>
-            <td><a href="bgglink">TBD</a></td>
-            <td>9/25</td>
-            <td>MDK Gliwice</td>
-            <td>27.09.2021r. 17:00</td>
-        </tr>
+        {% endfor %}
     </table>
 </div>
 <h1>PAST EVENTS</h1>
@@ -45,62 +40,16 @@
         <th>Players</th>
         <th>Location</th>
         <th>Time</th>
+        {% for event in past %}
         <tr>
-            <td><a href="eventpage">GoT night</a></td>
-            <td><a href="hostpage">hostusername</a></td>
-            <td><a href="bgglink">game B</a>, <a href="bgglink">game B</a></td>
-            <td>3</td>
-            <td>host's house, Zabrze Kownacki street 56, wooden house by the lake</td>
-            <td>27.09.2003r. 22:00</td>
+            <td><a href="/events/{{event.id}}">{{event.name}}</a></td>
+            <td><a href="/members/{{event.host.id}}">{{event.host.username}}</a></td>
+            <td>{% for game in event.games %}<a href="{{game.link}}">{{game.title}}</a>    {% endfor %}</td>
+            <td>{{joined[event.name]}}</td>
+            <td>{{event.location.name}}</td>
+            <td>{{event.time}}</td>
         </tr>
-        <tr>
-            <td><a href="eventpage">Gambit meeting</a></td>
-            <td><a href="hostpage">host2username</a></td>
-            <td><a href="bgglink">Some Game Title</a></td>
-            <td>19</td>
-            <td>MDK Gliwice</td>
-            <td>27.09.2001r. 17:00</td>
-        </tr>
-        <tr>
-            <td><a href="eventpage">Gambit meeting</a></td>
-            <td><a href="hostpage">host2username</a></td>
-            <td><a href="bgglink">Some Game Title</a></td>
-            <td>19</td>
-            <td>MDK Gliwice</td>
-            <td>27.09.2001r. 17:00</td>
-        </tr>
-        <tr>
-            <td><a href="eventpage">Gambit meeting</a></td>
-            <td><a href="hostpage">host2username</a></td>
-            <td><a href="bgglink">Some Game Title</a></td>
-            <td>19</td>
-            <td>MDK Gliwice</td>
-            <td>27.09.2001r. 17:00</td>
-        </tr>
-        <tr>
-            <td><a href="eventpage">Gambit meeting</a></td>
-            <td><a href="hostpage">host2username</a></td>
-            <td><a href="bgglink">Some Game Title</a></td>
-            <td>19</td>
-            <td>MDK Gliwice</td>
-            <td>27.09.2001r. 17:00</td>
-        </tr>
-        <tr>
-            <td><a href="eventpage">Gambit meeting</a></td>
-            <td><a href="hostpage">host2username</a></td>
-            <td><a href="bgglink">Some Game Title</a></td>
-            <td>19</td>
-            <td>MDK Gliwice</td>
-            <td>27.09.2001r. 17:00</td>
-        </tr>
-        <tr>
-            <td><a href="eventpage">Gambit meeting</a></td>
-            <td><a href="hostpage">host2username</a></td>
-            <td><a href="bgglink">Some Game Title</a></td>
-            <td>19</td>
-            <td>MDK Gliwice</td>
-            <td>27.09.2001r. 17:00</td>
-        </tr>
+        {% endfor %}
     </table>
 </div>
 {% endblock %}

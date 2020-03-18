@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template, jsonify, request
+from datetime import datetime
+from flask import Flask, render_template, jsonify, request, redirect
 from models import db, db_path, setup_db, Game, Member, Location, Event
 from forms import *
 
@@ -35,7 +36,18 @@ def get_all_members():
 
 @app.route('/events/all')
 def get_all_events():
-  return render_template('pages/events.html')
+  events=Event.query.all()
+  past_events=[]
+  future_events=[]
+  players_num={}
+  
+  for e in events:
+    if e.time<datetime.now():
+      past_events.append(e)
+    else:
+      future_events.append(e)
+    players_num[e.name]=len(e.players)
+  return render_template('pages/events.html',past=past_events, future=future_events, joined=players_num)
 
 @app.route('/events/<int:event_id>')
 def get_event_page(event_id):
@@ -164,7 +176,7 @@ def create_event():
     print(e)
   finally:
     db.session.close()
-    return render_template('pages/events.html')
+    return redirect('/events/all')###
 
 
     
