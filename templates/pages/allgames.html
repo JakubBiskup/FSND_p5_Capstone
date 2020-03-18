@@ -11,32 +11,19 @@
       </form>
 </div>
 <div>
-    <h2>Our club collection currently has 5 titles</h2>
+    <h2>Our club collection currently has {{games_num}} titles</h2>
 </div>
 <div class="gamestable">
     <table class="tableofgames">
         <th>Title</th>
         <th>Owner(s)</th>
+        {% for game in games %}
         <tr>
-            <td><a href="bgglink">game A</a></td>
-            <td><a href="ownerpage">owner1</a></td>
+            <td><a href="{{game.link}}">{{game.title}}</a></td>
+            <td>{% for owner in game.owners %}<a href="/members/{{owner.id}}">{{owner.username}}</a>     {% endfor%}</td>
+
         </tr>
-        <tr>
-            <td><a href="bgglink">game B</a></td>
-            <td><a href="ownerpage">owner1</a>, <a href="ownerpage">owner2</a></td>
-        </tr>
-        <tr>
-            <td><a href="bgglink">game C</a></td>
-            <td><a href="ownerpage">owner1</a></td>
-        </tr>
-        <tr>
-            <td><a href="bgglink">game D</a></td>
-            <td><a href="ownerpage">owner1</a></td>
-        </tr>
-        <tr>
-            <td><a href="bgglink">game z</a></td>
-            <td><a href="ownerpage">owner1</a></td>
-        </tr>
+        {% endfor %}
     </table>
 </div>
 {% endblock %}

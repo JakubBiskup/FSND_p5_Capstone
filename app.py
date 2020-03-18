@@ -25,7 +25,9 @@ def index():
 
 @app.route('/games/all')
 def get_all_games():
-  return render_template('pages/allgames.html')
+  games=Game.query.all()
+  games_num=str(len(games))
+  return render_template('pages/allgames.html', games=games,games_num=games_num)
 
 @app.route('/members/all')
 def get_all_members():
