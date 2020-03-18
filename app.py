@@ -12,7 +12,7 @@ app.config['SECRET_KEY']=SECRET_KEY
 setup_db(app, db_path)
 
 #HELPERS#
-def get_current_user_auth0_id(user_id=1): #######################implement this function later, for now it returns a fixed auth0userid string,
+def get_current_user_auth0_id(user_id=1): #######################implement this function later, for now it returns auth0userid of given id's member string,
   currmember=Member.query.filter_by(id=user_id).one_or_none()
   auth0_user_id=currmember.auth0_user_id
   return auth0_user_id
@@ -83,8 +83,8 @@ def get_user_form():
 def create_user():
   try:
     username=request.form.get('username')
-    auth0_user_id=get_current_user_auth0_id()
-    
+    #auth0_user_id=get_current_user_auth0_id()
+    auth0_user_id='thisisnotrealauth0idbutshoulddoitfornow2'####
     img_link=request.form.get('img_link')
     description=request.form.get('description')
     
@@ -92,10 +92,23 @@ def create_user():
     last_name=request.form.get('last_name')
     phone=request.form.get('phone')
     email=request.form.get('email')
-    #####TODO:get home address data
     new_user=Member(username=username,img_link=img_link,auth0_user_id=auth0_user_id,description=description,first_name=first_name,last_name=last_name,phone=phone,email=email)
     db.session.add(new_user)
-    #####TODO:create a new location ,naming it 'member's home if it doesnt exist already and set it as member's home address
+
+    country=request.form.get('country')
+    city=request.form.get('city')
+    street=request.form.get('street')
+    house_num=request.form.get('house_num')
+    appartment_num=request.form.get('appartment_num')
+    if appartment_num=='':
+      appartment_num=None
+    if country and city and street and house_num:
+      home_name=username+"'s home"
+      new_home=Location(name=home_name,country=country,city=city,street=street,house_num=house_num,appartment_num=appartment_num)
+      db.session.add(new_home)
+      print(new_home.id)
+      new_user.home_address=new_home
+    
     db.session.commit()
   except Exception as e:
     db.session.rollback()
