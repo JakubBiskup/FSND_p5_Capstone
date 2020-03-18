@@ -32,7 +32,9 @@ def get_all_games():
 
 @app.route('/members/all')
 def get_all_members():
-  return render_template('pages/members.html')
+  members=Member.query.order_by(Member.username).all() #### change this later to ignore guests(users not granted member status yet)
+  members_num=str(len(members))
+  return render_template('pages/members.html',members=members,members_num=members_num)
 
 @app.route('/events/all')
 def get_all_events():
