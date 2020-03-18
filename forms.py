@@ -39,7 +39,7 @@ class EventForm(Form):
     city=StringField('City')
     street=StringField('Street')
     house_num=StringField('House Number')
-    appartment_num=StringField('Appartment Number')
+    appartment_num=IntegerField('Appartment Number')
 
     submit=SubmitField('Create event')
 

@@ -12,8 +12,10 @@ app.config['SECRET_KEY']=SECRET_KEY
 setup_db(app, db_path)
 
 #HELPERS#
-def get_current_user_auth0_id(): #######################implement this function later, for now it returns a fixed auth0userid string,
-  return 'auth0|5e6e431710d6ee0c8edc675e'
+def get_current_user_auth0_id(user_id=1): #######################implement this function later, for now it returns a fixed auth0userid string,
+  currmember=Member.query.filter_by(id=user_id).one_or_none()
+  auth0_user_id=currmember.auth0_user_id
+  return auth0_user_id
 #
 
 
@@ -36,8 +38,8 @@ def get_all_events():
 @app.route('/events/<int:event_id>')
 def get_event_page(event_id):
   event=Event.query.filter_by(id=event_id).first()
-  current_players=event.players##
-  current_players_num=len(current_players)##
+  current_players=event.players####
+  current_players_num=len(current_players)####
   return render_template('pages/event.html', event=event, current_players_num=current_players_num)
 
 @app.route('/members/<int:member_id>')
@@ -117,10 +119,24 @@ def create_event():
     time=request.form.get('time')
     max_players=request.form.get('max_players')
     description=request.form.get('description')
-    host_id=1#####
-    players=[Member.query.filter_by(auth0_user_id=get_current_user_auth0_id()).one_or_none()]
-    location_id=request.form.get('location')
-    ####TODO:implement creating a new location
+    host_id=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(4)).one_or_none().id#####
+    players=[Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(4)).one_or_none()]
+    
+    if request.form.get('location')=='0': #this will run when user chose 'a new location'
+      location_name=request.form.get('location_name')
+      country=request.form.get('country')
+      city=request.form.get('city')
+      street=request.form.get('street')
+      house_num=request.form.get('house_num')
+      appartment_num=request.form.get('appartment_num')
+      if appartment_num=='':
+        appartment_num=None
+      new_location=Location(name=location_name,country=country,city=city,street=street,house_num=house_num,appartment_num=appartment_num)
+      db.session.add(new_location)
+      location_id=Location.query.filter_by(name=location_name).one_or_none().id
+    else:
+      location_id=request.form.get('location')
+
     games=[Game.query.filter_by(id=game_id).one_or_none() for game_id in request.form.getlist('games')]
     
     new_event=Event(name=name,time=time,max_players=max_players,host_id=host_id,location_id=location_id,description=description)
