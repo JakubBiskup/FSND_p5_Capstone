@@ -1,17 +1,21 @@
 import os
 from datetime import datetime
 from flask import Flask, render_template, jsonify, request, redirect
-from models import db, db_path, setup_db, Game, Member, Location, Event
+from models import db, db_path, setup_db, Game, Member, Location, Event, Club
 from forms import *
 
 SECRET_KEY=os.urandom(32)
+
 
 app=Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = db_path
 app.config['SECRET_KEY']=SECRET_KEY
 
 setup_db(app, db_path)
-
+##
+CLUB_NAME=Club.query.first().name
+##
+app.jinja_env.globals['CLUB_NAME']=CLUB_NAME
 #HELPERS#
 def get_current_user_auth0_id(user_id=1): #######################implement this function later, for now it returns auth0userid of given id's member string,
   currmember=Member.query.filter_by(id=user_id).one_or_none()
@@ -79,7 +83,7 @@ def create_game():
     title=request.form.get('title')
     link=request.form.get('link')
     new_game=Game(title=title,link=link)
-    current_user=Member.query.first()#####Change this query to get a user that is currently logged in 
+    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id()).one_or_none()#####
     new_game.owners.append(current_user)
     db.session.add(new_game)
     db.session.commit()
@@ -179,6 +183,36 @@ def create_event():
   finally:
     db.session.close()
     return redirect('/events/all')###
+
+@app.route('/home/edit')
+def get_club_form():
+  form=ClubForm()
+  return render_template('forms/edit_club.html', form=form)
+
+
+@app.route('/home/edit', methods=['POST'])
+def edit_club_info():
+  try:
+    name=request.form.get('name')
+    img_link=request.form.get('img_link')
+    h1=request.form.get('h1')
+    welcoming_text=request.form.get('welcoming_text')
+    club_info=Club.query.first()
+    if name:
+      club_info.name=name
+    if img_link:
+      club_info.img_link=img_link
+    if h1:
+      club_info.h1=h1
+    if welcoming_text:
+      club_info.welcoming_text=welcoming_text
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+  return redirect('/')
 
 
     

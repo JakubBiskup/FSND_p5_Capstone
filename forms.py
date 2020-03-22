@@ -2,6 +2,7 @@ from flask_wtf import Form
 from wtforms import IntegerField, StringField, SelectField, SelectMultipleField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, URL
 from wtforms.fields.html5 import DateTimeField
+from wtforms.widgets import TextArea
 
 class GameForm(Form):
     title=StringField('Title', validators=[DataRequired()])
@@ -42,6 +43,16 @@ class EventForm(Form):
     appartment_num=IntegerField('Appartment Number')
 
     submit=SubmitField('Create event')
+
+class ClubForm(Form):
+    name=StringField('Club name')
+    img_link=StringField('Link to image on homepage')
+    h1=StringField('Header')
+    welcoming_text=StringField('Welcoming text or club description', widget=TextArea())
+
+    submit=SubmitField('Save and apply changes')
+
+
 
 
 

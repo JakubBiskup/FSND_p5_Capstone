@@ -1,0 +1,29 @@
+{% extends "layouts/base.html" %}
+{% block title %} Edit Club {% endblock %}
+{% block content %}
+<h1>Edit club information</h1>
+<form action="" method="POST">
+    <p>
+        {{form.name.label}}<br>
+        {{form.name}}
+    </p>
+    <p>
+        {{form.img_link.label}}<br>
+        {{form.img_link(size=50)}}
+    </p>
+    <p>
+        {{form.h1.label}}<br>
+        {{form.h1(size=50)}}
+    </p>
+    <p>
+        {{form.welcoming_text.label}}<br>
+        {{form.welcoming_text(cols="60", rows="5")}}
+    </p>
+    <p>
+        {{form.submit()}}
+    </p>
+</form>
+
+
+
+{% endblock %}
