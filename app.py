@@ -62,6 +62,57 @@ def get_event_page(event_id):
   current_players_num=len(current_players)####
   return render_template('pages/event.html', event=event, current_players_num=current_players_num)
 
+@app.route('/events/<int:event_id>/edit')
+def get_event_edit_form(event_id):
+  event=Event.query.filter_by(id=event_id).one_or_none()
+  form=EditEventForm()
+  form.location.choices=[(l.id, l.name) for l in Location.query.all()]
+  form.location.choices.append((0,'a new location'))
+  form.games.choices=[(g.id, g.title) for g in Game.query.all()]
+  return render_template('forms/edit_event.html', event=event, form=form)
+
+@app.route('/events/<int:event_id>/edit', methods=["POST"])
+def edit_event(event_id):
+  try:
+    name=request.form.get('name')
+    description=request.form.get('description')
+    time=request.form.get('time')
+    games=[Game.query.filter_by(id=game_id).one_or_none() for game_id in request.form.getlist('games')]
+    max_players=request.form.get('max_players')
+    event=Event.query.filter_by(id=event_id).one_or_none()
+    if request.form.get('location')=='0': #this will run when user chose 'a new location'
+      location_name=request.form.get('location_name')
+      country=request.form.get('country')
+      city=request.form.get('city')
+      street=request.form.get('street')
+      house_num=request.form.get('house_num')
+      appartment_num=request.form.get('appartment_num')
+      if appartment_num=='':
+        appartment_num=None
+      new_location=Location(name=location_name,country=country,city=city,street=street,house_num=house_num,appartment_num=appartment_num)
+      db.session.add(new_location)
+      location_id=Location.query.filter_by(name=location_name).one_or_none().id
+    else:
+      location_id=request.form.get('location')
+    if name:
+      event.name=name
+    if description:
+      event.description=description
+    if time:
+      event.time=time
+    if games:
+      event.games=games
+    if max_players:
+      event.max_players=max_players
+    event.location_id=location_id
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return redirect(f"/events/{event_id}")
+    
 @app.route('/members/<int:member_id>')
 def get_userpage(member_id):
   member=Member.query.filter_by(id=member_id).first()

@@ -30,10 +30,10 @@ class MemberForm(Form):
 class EventForm(Form):
     name=StringField('Event name', validators=[DataRequired()])
     time=DateTimeField('Time',  format='%Y-%m-%d %H:%M', validators=[DataRequired()])
-    location=SelectField('Location', choices=[])
+    location=SelectField('Location', choices=[], validators=[DataRequired()])
     max_players=IntegerField('Players max number',validators=[DataRequired()])
     games=SelectMultipleField('Games (ctrl+click to choose multiple)', choices=[])
-    description=StringField('Description')
+    description=StringField('Description', widget=TextArea())
     
     location_name=StringField('Name of the new location')
     country=StringField('Country')
@@ -51,6 +51,23 @@ class ClubForm(Form):
     welcoming_text=StringField('Welcoming text or club description', widget=TextArea())
 
     submit=SubmitField('Save and apply changes')
+
+class EditEventForm(Form):
+    name=StringField('Event name')
+    time=DateTimeField('Time',  format='%Y-%m-%d %H:%M')
+    location=SelectField('Location', choices=[])
+    max_players=IntegerField('Players max number')
+    games=SelectMultipleField('Games (ctrl+click to choose multiple)', choices=[])
+    description=StringField('Description', widget=TextArea())
+    
+    location_name=StringField('Name of the new location')
+    country=StringField('Country')
+    city=StringField('City')
+    street=StringField('Street')
+    house_num=StringField('House Number')
+    appartment_num=IntegerField('Appartment Number')
+
+    submit=SubmitField('Edit event')
 
 
 

@@ -1,32 +1,38 @@
 {% extends "layouts/base.html" %}
-{% block title %} Create Event {% endblock %}
+{% block title %} Edit {{event.name}} {% endblock %}
 {% block content %}
-<h1>Create new event</h1>
-
+<h1>Edit event</h1>
+<p>Fill out the field(s) you want to edit and REMEMBER TO CHECK LOCATION</p>
 <form action="" method="POST">
     <p>
         {{form.name.label}}<br>
+        Current: {{event.name}}<br>
         {{form.name(size=40)}}
     </p>
     <p>
         {{form.description.label}}<br>
+        Current: {{event.description}}<br>
         {{form.description(cols="60", rows="5")}}
     </p>
     <p>
         {{form.time.label}}<br>
+        Current: {{event.time}}<br>
         {{form.time(placeholder="YYYY-MM-DD hh:mm")}}
     </p>
     <p>
         {{form.games.label}}<br>
+        Current: {% for game in event.games %}{{game.title}}  {% endfor %}<br>
         {{form.games()}}
     </p>
     <p>
         {{form.max_players.label}}<br>
+        Current: {{event.max_players}}<br>
         {{form.max_players(size=6)}}
     </p>
     <p>
         {{form.location.label}}<br>
-        {{form.location()}}
+        Current: {{event.location.name}}<br>
+        {{form.location(default=event.location_id)}}
     </p>
     <h3>New location</h3>
     <p>(leave  these fields blank unless your event will take place at a new location)</p>
