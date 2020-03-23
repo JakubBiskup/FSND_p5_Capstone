@@ -72,6 +72,76 @@ def get_userpage_with_details(member_id):
   member=Member.query.filter_by(id=member_id).first()
   return render_template('pages/detaileduser.html', member=member)
 
+@app.route('/members/<int:member_id>/edit')
+def get_user_edit_form(member_id):
+  user_before_edit=Member.query.filter_by(id=member_id).one_or_none()
+  form = MemberForm()
+  return render_template('forms/edit_user.html', form=form, member=user_before_edit)
+
+@app.route('/members/<int:member_id>/edit', methods=["POST"])
+def edit_user(member_id):
+  try:
+    user=Member.query.filter_by(id=member_id).one_or_none()
+    username=request.form.get('username')
+    img_link=request.form.get('img_link')
+    description=request.form.get('description')
+    
+    first_name=request.form.get('first_name')
+    last_name=request.form.get('last_name')
+    phone=request.form.get('phone')
+    email=request.form.get('email')
+
+    country=request.form.get('country')
+    city=request.form.get('city')
+    street=request.form.get('street')
+    house_num=request.form.get('house_num')
+    appartment_num=request.form.get('appartment_num')
+    if username:
+      user.username=username
+      if user.home_address!=None:
+        user.home_address.name=username+"'s home"
+    if img_link:
+      user.img_link=img_link
+    if description:
+      user.description=description
+    if first_name:
+      user.first_name=first_name
+    if last_name:
+      user.last_name=last_name
+    if phone:
+      user.phone=phone
+    if email:
+      user.email=email
+    if user.home_address!=None:
+      if country:
+        user.home_address.country=country
+      if city:
+        user.home_address.city=city
+      if street:
+        user.home_address.street=street
+      if house_num:
+        user.home_address.house_num=house_num
+      if appartment_num:
+        user.home_address.appartment_num=appartment_num
+    else:
+      if country and city and street and house_num:
+        if username:
+          home_name=username+"'s home"
+        else:
+          home_name=Member.query.filter_by(id=member_id).one_or_none().username +"'s home"
+        if appartment_num=='':
+          appartment_num=None
+        new_home=Location(name=home_name,country=country,city=city,street=street,house_num=house_num,appartment_num=appartment_num)
+        db.session.add(new_home)
+        user.home_address=new_home
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return redirect(f"/members/{member_id}")
+
 @app.route('/games/create')
 def get_game_form():
   form=GameForm()
@@ -126,7 +196,6 @@ def create_user():
       home_name=username+"'s home"
       new_home=Location(name=home_name,country=country,city=city,street=street,house_num=house_num,appartment_num=appartment_num)
       db.session.add(new_home)
-      print(new_home.id)
       new_user.home_address=new_home
     
     db.session.commit()

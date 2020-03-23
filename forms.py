@@ -10,9 +10,9 @@ class GameForm(Form):
     submit=SubmitField('Add game to your collection')
 
 class MemberForm(Form):
-    username=StringField('Username', validators=[DataRequired()])
+    username=StringField('Username')
     img_link=StringField('Profile image link', validators=[URL()])
-    description=StringField('Description')
+    description=StringField('Description', widget=TextArea())
     
     first_name=StringField('First Name')
     last_name=StringField('Last Name')
@@ -25,7 +25,7 @@ class MemberForm(Form):
     house_num=StringField('House Number')
     appartment_num=StringField('Appartment Number')
 
-    submit=SubmitField('Create your account')
+    submit=SubmitField('Save and apply')
 
 class EventForm(Form):
     name=StringField('Event name', validators=[DataRequired()])

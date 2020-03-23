@@ -1,59 +1,72 @@
 {% extends "layouts/base.html" %}
-{% block title %} Create your account {% endblock %}
+{% block title %} Edit {{member.username}} {% endblock %}
 {% block content %}
-<h1>Create your account</h1>
+<h1>Edit your account</h1>
+<p>Fill out ONLY the field(s) you want to edit, others will stay the same</p>
 <form action="" method="POST">
     <p>
         {{form.username.label}}<br>
+        Current: {{member.username}}<br>
         {{form.username(size=40)}}
     </p>
     <p>
         {{form.img_link.label}}<br>
+        Current: {{member.img_link}}<br>
         {{form.img_link(size=40)}}
     </p>
     <p>
         {{form.description.label}}<br>
+        Current: {{member.description}}<br>
         {{form.description(cols="60", rows="5")}}
     </p>
     <h2> Personal Information</h2>
     <p>
         {{form.first_name.label}}<br>
+        Current: {{member.first_name}}<br>
         {{form.first_name(size=40)}}
     </p>
     <p>
         {{form.last_name.label}}<br>
+        Current: {{member.last_name}}<br>
         {{form.last_name(size=40)}}
     </p>
     <p>
         {{form.phone.label}}<br>
+        Current: {{member.phone}}<br>
         {{form.phone(size=30)}}
     </p>
     <p>
         {{form.email.label}}<br>
+        Current: {{member.email}}<br>
         {{form.email(size=40)}}
     </p>
     <h3>Home Address</h3>
     <p>
         {{form.country.label}}<br>
+        Current: {{member.home_address.country}}<br>
         {{form.country(size=40)}}
     </p>
     <p>
         {{form.city.label}}<br>
+        Current: {{member.home_address.city}}<br>
         {{form.city(size=40)}}
     </p>
     <p>
         {{form.street.label}}<br>
+        Current: {{member.home_address.street}}<br>
         {{form.street(size=40)}}
     </p>
     <p>
         {{form.house_num.label}}<br>
+        Current: {{member.home_address.house_num}}<br>
         {{form.house_num(size=10)}}
     </p>
     <p>
         {{form.appartment_num.label}}<br>
+        Current: {{member.home_address.appartment_num}}<br>
         {{form.appartment_num(size=10)}}
     </p>
-    <p>{{form.submit()}}</p>
+    <p>{{form.submit(label="Edit account")}}</p>
 
 
 
