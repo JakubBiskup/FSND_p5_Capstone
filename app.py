@@ -204,7 +204,7 @@ def create_game():
     title=request.form.get('title')
     link=request.form.get('link')
     new_game=Game(title=title,link=link)
-    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id()).one_or_none()#####
+    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(6)).one_or_none()#####
     new_game.owners.append(current_user)
     db.session.add(new_game)
     db.session.commit()
@@ -213,7 +213,7 @@ def create_game():
     print(e)
   finally:
     db.session.close()
-    return render_template('pages/user.html',member=Member.query.first())
+    return render_template('pages/user.html',member=Member.query.first())####
 
 @app.route('/members/create')
 def get_user_form():
@@ -225,7 +225,7 @@ def create_user():
   try:
     username=request.form.get('username')
     #auth0_user_id=get_current_user_auth0_id()
-    auth0_user_id='thisisnotrealauth0idbutshoulddoitfornow2'####
+    auth0_user_id='thisisnotrealauth0idbutshoulddoitfornow123'####
     img_link=request.form.get('img_link')
     description=request.form.get('description')
     
@@ -272,8 +272,8 @@ def create_event():
     time=request.form.get('time')
     max_players=request.form.get('max_players')
     description=request.form.get('description')
-    host_id=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(4)).one_or_none().id#####
-    players=[Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(4)).one_or_none()]
+    host_id=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(6)).one_or_none().id#####
+    players=[Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(6)).one_or_none()]#####
     
     if request.form.get('location')=='0': #this will run when user chose 'a new location'
       location_name=request.form.get('location_name')
@@ -355,7 +355,20 @@ def search_results_game():
   count=len(results)
   return render_template('pages/search_game.html', search=search, results=results, count=count)
 
-    
+@app.route('/games/<int:game_id>/delete', methods=["DELETE"])
+def delete_game(game_id):
+  try:
+    game=Game.query.filter_by(id=game_id).one_or_none()
+    db.session.delete(game)
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return redirect('/games/all')
+
+
     
     
     
