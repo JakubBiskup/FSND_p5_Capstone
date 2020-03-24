@@ -1,0 +1,23 @@
+{% extends "layouts/base.html" %}
+{% block title %} Search for "{{search}}" in events{% endblock %}
+{% block content %}
+<h1>Your search for "{{search}}" returned {{count}} events</h1>
+{% if count!=0 %}
+<table class="tableofevents">
+    <th>Event name</th>
+    <th>Host</th>
+    <th>Game(s)</th>
+    <th>Location</th>
+    <th>Time</th>
+    {% for event in results %}
+    <tr>
+        <td><a href="/events/{{event.id}}">{{event.name}}</a></td>
+        <td><a href="/members/{{event.host.id}}">{{event.host.username}}</a></td>
+        <td>{% for game in event.games %}<a href="{{game.link}}">{{game.title}}</a>    {% endfor %}</td>
+        <td>{{event.location.name}}</td>
+        <td>{{event.time}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

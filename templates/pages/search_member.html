@@ -1,0 +1,21 @@
+{% extends "layouts/base.html" %}
+{% block title %} Search for "{{search}}" in members{% endblock %}
+{% block content %}
+<h1>Your search for "{{search}}" returned {{count}} members</h1>
+{% if count!=0 %}
+<div class="memberstable">
+    <table class="tableofmembers">
+        <th>Username</th>
+        <th>About</th>
+        <th>Rank</th>
+        {% for member in results %}
+        <tr>
+            <td><a href="/members/{{member.id}}">{{member.username}}</a></td>
+            <td><p>{{member.description}}</p></td>
+            <td>{% if member.admin %}Admin{% endif %}{% if member.member %} member{% endif %}{% if not member.admin and not member.member %}guest{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+{% endblock %}

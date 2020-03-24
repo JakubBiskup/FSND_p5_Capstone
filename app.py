@@ -334,6 +334,26 @@ def edit_club_info():
     db.session.close()
   return redirect('/')
 
+@app.route('/members/search', methods=["POST"])
+def search_results_member():
+  search=request.form.get('search_term')
+  results=Member.query.filter(Member.username.ilike(f'%{search}%')).all()
+  count=len(results)
+  return render_template('pages/search_member.html', search=search, results=results, count=count)
+
+@app.route('/events/search', methods=["POST"])
+def search_results_event():
+  search=request.form.get('search_term')
+  results=Event.query.filter(Event.name.ilike(f'%{search}%')).all()
+  count=len(results)
+  return render_template('pages/search_event.html', search=search, results=results, count=count)
+
+@app.route('/games/search', methods=["POST"])
+def search_results_game():
+  search=request.form.get('search_term')
+  results=Game.query.filter(Game.title.ilike(f'%{search}%')).all()
+  count=len(results)
+  return render_template('pages/search_game.html', search=search, results=results, count=count)
 
     
     

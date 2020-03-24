@@ -1,0 +1,20 @@
+{% extends "layouts/base.html" %}
+{% block title %} Search for "{{search}}" in games{% endblock %}
+{% block content %}
+<h1>Your search for "{{search}}" returned {{count}} games</h1>
+{% if count!=0 %}
+<div class="gamestable">
+    <table class="tableofgames">
+        <th>Title</th>
+        <th>Owner(s)</th>
+        {% for game in results %}
+        <tr>
+            <td><a href="{{game.link}}">{{game.title}}</a></td>
+            <td>{% for owner in game.owners %}<a href="/members/{{owner.id}}">{{owner.username}}</a>     {% endfor%}</td>
+
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+{% endblock %}
