@@ -368,7 +368,18 @@ def delete_game(game_id):
     db.session.close()
     return redirect('/games/all')
 
-
+@app.route('/events/<int:event_id>/delete', methods=["DELETE"])
+def delete_event(event_id):
+  try:
+    event=Event.query.filter_by(id=event_id).one_or_none()
+    db.session.delete(event)
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return redirect('/events/all')
     
     
     
