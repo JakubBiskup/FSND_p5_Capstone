@@ -1,0 +1,21 @@
+{% extends "layouts/base.html" %}
+{% block title %}  Edit game {% endblock %}
+{% block content %}
+<h1>Edit {{game.title}}</h1>
+<p>Please BOTH type in the correct title and paste a correct working link</p>
+<form action="" method="POST">
+    <p>
+        {{form.title.label}}<br>
+        Current: {{game.title}}<br>
+        {{form.title(size=40)}}
+    </p>
+    <p>
+        {{form.link.label}}<br>
+        Current: {{game.link}}<br>
+        {{form.link(size=40)}}
+    </p>
+    <p>
+        {{form.submit()}}
+    </p>
+</form>
+{% endblock %}

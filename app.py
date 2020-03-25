@@ -204,7 +204,7 @@ def create_game():
     title=request.form.get('title')
     link=request.form.get('link')
     new_game=Game(title=title,link=link)
-    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(6)).one_or_none()#####
+    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(5)).one_or_none()#####
     new_game.owners.append(current_user)
     db.session.add(new_game)
     db.session.commit()
@@ -213,7 +213,7 @@ def create_game():
     print(e)
   finally:
     db.session.close()
-    return render_template('pages/user.html',member=Member.query.first())####
+    return redirect('/games/all')
 
 @app.route('/members/create')
 def get_user_form():
@@ -334,6 +334,27 @@ def edit_club_info():
     db.session.close()
   return redirect('/')
 
+@app.route('/games/<int:game_id>/edit')
+def get_game_edit_form(game_id):
+  game=Game.query.filter_by(id=game_id).one_or_none()
+  form=GameForm()
+  return render_template('forms/edit_game.html',game=game,form=form)
+
+@app.route('/games/<int:game_id>/edit',methods=["POST"])
+def edit_game(game_id):
+  try:
+    game=Game.query.filter_by(id=game_id).one_or_none()
+    game.title=request.form.get('title')
+    game.link=request.form.get('link')
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+  return redirect('/games/all')
+
+  
 @app.route('/members/search', methods=["POST"])
 def search_results_member():
   search=request.form.get('search_term')
@@ -380,7 +401,7 @@ def delete_event(event_id):
   finally:
     db.session.close()
     return redirect('/events/all')
-#   NOT WORKING WHEN MEMBER HAS EVENTS HOSTED 
+
 @app.route('/members/<int:member_id>/delete', methods=["DELETE"])
 def delete_member(member_id):
   try:

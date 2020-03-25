@@ -7,7 +7,7 @@ from wtforms.widgets import TextArea
 class GameForm(Form):
     title=StringField('Title', validators=[DataRequired()])
     link=StringField('Link', validators=[URL(), DataRequired()])
-    submit=SubmitField('Add game to your collection')
+    submit=SubmitField('Save')
 
 class MemberForm(Form):
     username=StringField('Username')
