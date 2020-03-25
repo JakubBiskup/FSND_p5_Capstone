@@ -380,8 +380,23 @@ def delete_event(event_id):
   finally:
     db.session.close()
     return redirect('/events/all')
-    
-    
+#   NOT WORKING WHEN MEMBER HAS EVENTS HOSTED 
+@app.route('/members/<int:member_id>/delete', methods=["DELETE"])
+def delete_member(member_id):
+  try:
+    member=Member.query.filter_by(id=member_id).one_or_none()
+    for game in member.ownership: # This will delete games if they are no longer owned by any user 
+      if len(game.owners)==1:
+        db.session.delete(game)
+    db.session.delete(member)
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return redirect('/members/all')
+  
     
 
 

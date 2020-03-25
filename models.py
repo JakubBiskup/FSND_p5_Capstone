@@ -65,12 +65,12 @@ class Member(db.Model):
 class Event(db.Model):
     __tablename__='event'
     id=db.Column(db.Integer, primary_key=True)
-    name=db.Column(db.String(120))
+    name=db.Column(db.String(120), nullable=False)
     time=db.Column(db.DateTime, nullable=False)
     max_players=db.Column(db.Integer,nullable=False)
     description=db.Column(db.String(1000),nullable=True)
 
-    host_id=db.Column(db.Integer, db.ForeignKey('member.id'), nullable=False)
+    host_id=db.Column(db.Integer, db.ForeignKey('member.id'), nullable=True)
     location_id=db.Column(db.Integer, db.ForeignKey('location.id'), nullable=False)
 
 class Location(db.Model):
