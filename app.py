@@ -42,7 +42,7 @@ def get_all_members():
 
 @app.route('/events/all')
 def get_all_events():
-  events=Event.query.all()
+  events=Event.query.order_by(Event.time).all()
   past_events=[]
   future_events=[]
   players_num={}
@@ -53,6 +53,7 @@ def get_all_events():
     else:
       future_events.append(e)
     players_num[e.name]=len(e.players)
+  past_events.reverse()
   return render_template('pages/events.html',past=past_events, future=future_events, joined=players_num)
 
 @app.route('/events/<int:event_id>')
