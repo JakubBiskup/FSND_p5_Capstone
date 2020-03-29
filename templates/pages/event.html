@@ -1,7 +1,9 @@
 {% extends "layouts/base.html" %}
 {% block title %} {{event.name}} {% endblock %}
 {% block content %}
-<h1 style="font-size: 4rem;">{{event.name}}</h1>
+<h1 style="font-size: 4rem;">{{event.name}}<button style="font-size: xx-large; background-color: rgb(194, 18, 18);" class="delete-button">&cross;
+</button></h1>
+
 <h2>Seats taken: {{current_players_num}}/{{event.max_players}}</h2>
 <h2>Location: {{event.location.name}}</h2>
 <h2>Time: {{event.time}}</h2>
@@ -39,6 +41,18 @@
         <td>{{event.location.appartment_num}}</td>
     </tr>
 </table>
+<script>
+    const deleteButton=document.querySelector('.delete-button');
+    deleteButton.onclick=function(e){
+        console.log('event',e);
+        fetch('/events/'+"{{event.id}}"+'/delete',{
+            method: 'DELETE',
+        })
+        .then(function() {
+			location.href='/events/all';
+		})
+    }
+</script>
 
 
 {% endblock %}

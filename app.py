@@ -273,8 +273,8 @@ def create_event():
     time=request.form.get('time')
     max_players=request.form.get('max_players')
     description=request.form.get('description')
-    host_id=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(6)).one_or_none().id#####
-    players=[Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(6)).one_or_none()]#####
+    host_id=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(5)).one_or_none().id#####
+    players=[Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(5)).one_or_none()]#####
     
     if request.form.get('location')=='0': #this will run when user chose 'a new location'
       location_name=request.form.get('location_name')
@@ -396,12 +396,13 @@ def delete_event(event_id):
     event=Event.query.filter_by(id=event_id).one_or_none()
     db.session.delete(event)
     db.session.commit()
+    return jsonify({'success': True}), 200
   except Exception as e:
     db.session.rollback()
     print(e)
-  finally:
     db.session.close()
-    return redirect('/events/all')
+    return jsonify({'success': False})
+    
 
 @app.route('/members/<int:member_id>/delete', methods=["DELETE"])
 def delete_member(member_id):
