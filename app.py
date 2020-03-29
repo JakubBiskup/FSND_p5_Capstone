@@ -26,7 +26,8 @@ def get_current_user_auth0_id(user_id=1): #######################implement this 
 
 @app.route('/')
 def index():
-  return render_template('pages/home.html')
+  club=Club.query.first()
+  return render_template('pages/home.html',club=club)
 
 @app.route('/games/all')
 def get_all_games():
@@ -319,14 +320,16 @@ def edit_club_info():
     h1=request.form.get('h1')
     welcoming_text=request.form.get('welcoming_text')
     club_info=Club.query.first()
-    if name:
-      club_info.name=name
+    
     if img_link:
       club_info.img_link=img_link
     if h1:
       club_info.h1=h1
     if welcoming_text:
       club_info.welcoming_text=welcoming_text
+    if name:
+      club_info.name=name
+      app.jinja_env.globals['CLUB_NAME']=name
     db.session.commit()
   except Exception as e:
     db.session.rollback()
