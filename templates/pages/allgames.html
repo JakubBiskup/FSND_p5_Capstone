@@ -19,7 +19,7 @@
         <th>Owner(s)</th>
         {% for game in games %}
         <tr>
-            <td><a href="{{game.link}}">{{game.title}}</a></td>
+            <td><a href="{{game.link}}">{{game.title}}</a><button class="delete-button" style="background-color: red;" data-id="{{game.id}}">&cross;</button></td>
             <td>{% for owner in game.owners %}<a href="/members/{{owner.id}}">{{owner.username}}</a>     {% endfor%}<button data-id="{{game.id}}" class="own-button" style="background-color: green; color:white" >&plus;</button></td>
 
         </tr>
@@ -34,6 +34,20 @@
             const gameID=e.target.dataset['id'];
             fetch('/games/'+gameID+'/own', {
                 method: 'PATCH'
+            })
+            .then(function() {
+                location.reload();
+            })
+
+        }
+    }
+    const deleteButtons = document.querySelectorAll('.delete-button')
+    for (let i=0;i<deleteButtons.length;i++) {
+        const deleteButton=deleteButtons[i];
+        deleteButton.onclick=function(e) {
+            const gameID=e.target.dataset['id'];
+            fetch('/games/'+gameID+'/delete', {
+                method: 'DELETE'
             })
             .then(function() {
                 location.reload();
