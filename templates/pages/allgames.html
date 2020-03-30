@@ -20,10 +20,26 @@
         {% for game in games %}
         <tr>
             <td><a href="{{game.link}}">{{game.title}}</a></td>
-            <td>{% for owner in game.owners %}<a href="/members/{{owner.id}}">{{owner.username}}</a>     {% endfor%}</td>
+            <td>{% for owner in game.owners %}<a href="/members/{{owner.id}}">{{owner.username}}</a>     {% endfor%}<button data-id="{{game.id}}" class="own-button" style="background-color: green; color:white" >&plus;</button></td>
 
         </tr>
         {% endfor %}
     </table>
 </div>
+<script>
+    const ownButtons = document.querySelectorAll('.own-button')
+    for (let i=0;i<ownButtons.length;i++) {
+        const ownButton=ownButtons[i];
+        ownButton.onclick=function(e) {
+            const gameID=e.target.dataset['id'];
+            fetch('/games/'+gameID+'/own', {
+                method: 'PATCH'
+            })
+            .then(function() {
+                location.reload();
+            })
+
+        }
+    }
+</script>
 {% endblock %}

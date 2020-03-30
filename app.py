@@ -355,6 +355,21 @@ def edit_club_info():
     db.session.close()
   return redirect('/')
 
+@app.route('/games/<int:game_id>/own', methods=['PATCH'])
+def declare_ownership_of_existing_game(game_id):
+  try:
+    game=Game.query.filter_by(id=game_id).one_or_none()
+    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id()).one_or_none()####
+    if game not in current_user.ownership:
+      current_user.ownership.append(game)
+      db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+  return redirect('/games/all')
+
 @app.route('/games/<int:game_id>/edit')
 def get_game_edit_form(game_id):
   game=Game.query.filter_by(id=game_id).one_or_none()
