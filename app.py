@@ -17,7 +17,7 @@ CLUB_NAME=Club.query.first().name
 ##
 app.jinja_env.globals['CLUB_NAME']=CLUB_NAME
 #HELPERS#
-def get_current_user_auth0_id(user_id=1): #######################implement this function later, for now it returns auth0userid of given id's member string,
+def get_current_user_auth0_id(user_id=1): #######################implement this function later, for now it returns auth0userid of given id's member,
   currmember=Member.query.filter_by(id=user_id).one_or_none()
   auth0_user_id=currmember.auth0_user_id
   return auth0_user_id
@@ -72,6 +72,23 @@ def get_event_edit_form(event_id):
   form.location.choices.append((0,'a new location'))
   form.games.choices=[(g.id, g.title) for g in Game.query.all()]
   return render_template('forms/edit_event.html', event=event, form=form)
+
+@app.route('/events/<int:event_id>/join', methods=["PATCH"])
+def join_event(event_id):
+  try:
+    event=Event.query.filter_by(id=event_id).one_or_none()
+    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(5)).one_or_none()#####
+    if current_user not in event.players and len(event.players)<event.max_players:
+      event.players.append(current_user)
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return redirect(f"/events/{event_id}")
+
+
 
 @app.route('/events/<int:event_id>/edit', methods=["POST"])
 def edit_event(event_id):
@@ -304,7 +321,7 @@ def create_event():
     print(e)
   finally:
     db.session.close()
-    return redirect('/events/all')###
+    return redirect('/events/all')
 
 @app.route('/home/edit')
 def get_club_form():
