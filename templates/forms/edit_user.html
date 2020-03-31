@@ -6,67 +6,55 @@
 <form action="" method="POST">
     <p>
         {{form.username.label}}<br>
-        Current: {{member.username}}<br>
-        {{form.username(size=40)}}
+        {{form.username(size=40, value=member.username)}}
     </p>
     <p>
         {{form.img_link.label}}<br>
-        Current: {{member.img_link}}<br>
-        {{form.img_link(size=40)}}
+        {{form.img_link(size=40, value=member.img_link)}}
     </p>
     <p>
         {{form.description.label}}<br>
-        Current: {{member.description}}<br>
         {{form.description(cols="60", rows="5")}}
     </p>
     <h2> Personal Information</h2>
     <p>
         {{form.first_name.label}}<br>
-        Current: {{member.first_name}}<br>
-        {{form.first_name(size=40)}}
+        {{form.first_name(size=40, value=member.first_name)}}
     </p>
     <p>
         {{form.last_name.label}}<br>
-        Current: {{member.last_name}}<br>
-        {{form.last_name(size=40)}}
+        {{form.last_name(size=40, value=member.last_name)}}
     </p>
     <p>
         {{form.phone.label}}<br>
-        Current: {{member.phone}}<br>
-        {{form.phone(size=30)}}
+        {{form.phone(size=30, value=member.phone)}}
     </p>
     <p>
         {{form.email.label}}<br>
-        Current: {{member.email}}<br>
-        {{form.email(size=40)}}
+        {{form.email(size=40, value=member.email)}}
     </p>
     <h3>Home Address</h3>
     <p>
         {{form.country.label}}<br>
-        Current: {{member.home_address.country}}<br>
-        {{form.country(size=40)}}
+        {{form.country(size=40, value=member.home_address.country)}}
     </p>
     <p>
         {{form.city.label}}<br>
-        Current: {{member.home_address.city}}<br>
-        {{form.city(size=40)}}
+        {{form.city(size=40, value=member.home_address.city)}}
     </p>
     <p>
         {{form.street.label}}<br>
-        Current: {{member.home_address.street}}<br>
-        {{form.street(size=40)}}
+        {{form.street(size=40, value=member.home_address.street)}}
     </p>
     <p>
         {{form.house_num.label}}<br>
-        Current: {{member.home_address.house_num}}<br>
-        {{form.house_num(size=10)}}
+        {{form.house_num(size=10, value=member.home_address.house_num)}}
     </p>
     <p>
         {{form.appartment_num.label}}<br>
-        Current: {{member.home_address.appartment_num}}<br>
-        {{form.appartment_num(size=10)}}
+        {{form.appartment_num(size=10, value=member.home_address.appartment_num)}}
     </p>
-    <p>{{form.submit(label="Edit account")}}</p>
+    <p>{{form.submit(value='Edit account')}}</p>
 
 
 

@@ -71,6 +71,10 @@ def get_event_edit_form(event_id):
   form.location.choices=[(l.id, l.name) for l in Location.query.all()]
   form.location.choices.append((0,'a new location'))
   form.games.choices=[(g.id, g.title) for g in Game.query.all()]
+  form.location.default=event.location_id
+  form.games.default=[g.id for g in event.games]
+  form.process()
+  form.description.data=event.description
   return render_template('forms/edit_event.html', event=event, form=form)
 
 @app.route('/events/<int:event_id>/join', methods=["PATCH"])
@@ -146,6 +150,7 @@ def get_userpage_with_details(member_id):
 def get_user_edit_form(member_id):
   user_before_edit=Member.query.filter_by(id=member_id).one_or_none()
   form = MemberForm()
+  form.description.data=user_before_edit.description
   return render_template('forms/edit_user.html', form=form, member=user_before_edit)
 
 @app.route('/members/<int:member_id>/edit', methods=["POST"])
@@ -326,7 +331,9 @@ def create_event():
 @app.route('/home/edit')
 def get_club_form():
   form=ClubForm()
-  return render_template('forms/edit_club.html', form=form)
+  old_club=Club.query.first()
+  form.welcoming_text.data=old_club.welcoming_text
+  return render_template('forms/edit_club.html', form=form, club=old_club)
 
 
 @app.route('/home/edit', methods=['POST'])

@@ -5,15 +5,15 @@
 <form action="" method="POST">
     <p>
         {{form.name.label}}<br>
-        {{form.name}}
+        {{form.name(value=club.name)}}
     </p>
     <p>
         {{form.img_link.label}}<br>
-        {{form.img_link(size=50)}}
+        {{form.img_link(size=50, value=club.img_link)}}
     </p>
     <p>
         {{form.h1.label}}<br>
-        {{form.h1(size=50)}}
+        {{form.h1(size=50,value=club.h1)}}
     </p>
     <p>
         {{form.welcoming_text.label}}<br>

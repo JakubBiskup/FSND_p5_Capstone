@@ -2,32 +2,27 @@
 {% block title %} Edit {{event.name}} {% endblock %}
 {% block content %}
 <h1>Edit event</h1>
-<p>Fill out the field(s) you want to edit and REMEMBER TO CHECK LOCATION</p>
 <form action="" method="POST">
     <p>
         {{form.name.label}}<br>
-        Current: {{event.name}}<br>
-        {{form.name(size=40)}}
+        {{form.name(size=40,value=event.name)}}
     </p>
     <p>
         {{form.description.label}}<br>
-        Current: {{event.description}}<br>
         {{form.description(cols="60", rows="5")}}
     </p>
     <p>
         {{form.time.label}}<br>
-        Current: {{event.time}}<br>
-        {{form.time(placeholder="YYYY-MM-DD hh:mm")}}
+        {{form.time(value=event.time)}}
     </p>
     <p>
         {{form.games.label}}<br>
-        Current: {% for game in event.games %}{{game.title}}  {% endfor %}<br>
-        {{form.games()}}
+        Games previously chosen: {% for game in event.games %}{{game.title}}  {% endfor %}<br>
+        {{form.games(size=7)}}
     </p>
     <p>
         {{form.max_players.label}}<br>
-        Current: {{event.max_players}}<br>
-        {{form.max_players(size=6)}}
+        {{form.max_players(size=6,value=event.max_players)}}
     </p>
     <p>
         {{form.location.label}}<br>
