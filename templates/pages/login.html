@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>Click continue</title>
+        <style>
+            body {
+                background: chocolate;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='urlhash'>
+            <form class="form" action="" method="POST">
+                <input label='after_hash' type="hidden" name='after_hash'>
+            </form>
+        </div>
+        <button class='continue'>CONTINUE</button>
+        <script>
+            const continueButton=document.querySelector('.continue')
+            continueButton.onclick=function(e){
+            console.log('event',e);
+            const form=document.querySelector('.form')
+            const inputt=document.querySelector("input")
+            inputt.value=window.location.hash;
+            form.submit();
+            
+            
+            
+            
+            }
+        </script>
+    </body>
+</html>

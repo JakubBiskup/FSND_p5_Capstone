@@ -1,8 +1,9 @@
 import os
 from datetime import datetime
-from flask import Flask, render_template, jsonify, request, redirect
+from flask import Flask, render_template, jsonify, request, redirect, make_response 
 from models import db, db_path, setup_db, Game, Member, Location, Event, Club
 from forms import *
+from auth import AuthError, requires_auth
 
 SECRET_KEY=os.urandom(32)
 
@@ -23,9 +24,22 @@ def get_current_user_auth0_id(user_id=1): #######################implement this 
   return auth0_user_id
 #
 
+@app.route('/login')
+def get_continue_button():
+  return render_template('pages/login.html')
+
+@app.route('/login', methods=["POST"])
+def store_token_as_a_cookie():
+  after_hash=request.form.get('after_hash')
+  hash_split=after_hash.split('&')[0]
+  token_string=hash_split.split('=')[1]
+  token='Bearer '+token_string
+  response=make_response(redirect('/'))
+  response.set_cookie('token',token)
+  return response
 
 @app.route('/')
-def index():
+def index(payload=None):
   club=Club.query.first()
   return render_template('pages/home.html',club=club)
 
