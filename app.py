@@ -5,7 +5,7 @@ from models import db, db_path, setup_db, Game, Member, Location, Event, Club
 from forms import *
 from auth import AuthError, requires_auth
 
-SECRET_KEY=os.urandom(32)
+SECRET_KEY=os.urandom(32)###
 
 
 app=Flask(__name__)
@@ -422,7 +422,7 @@ def search_results_member():
 @app.route('/events/search', methods=["POST"])
 def search_results_event():
   search=request.form.get('search_term')
-  results=Event.query.filter(Event.name.ilike(f'%{search}%')).all()
+  results=Event.query.filter(Event.name.ilike(f'%{search}%')).order_by(Event.time).all()
   count=len(results)
   return render_template('pages/search_event.html', search=search, results=results, count=count)
 
@@ -475,8 +475,50 @@ def delete_member(member_id):
   finally:
     db.session.close()
     return redirect('/members/all')
-  
-    
+
+
+#Error handling
+@app.errorhandler(422)
+def unprocessable(error):
+    return jsonify({
+        "success": False,
+        "error": 422,
+        "message": "unprocessable"
+    }), 422
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        'error': 404,
+        'message': "resource not found"
+    }), 404
+
+
+@app.errorhandler(AuthError)
+def authorization_failed(error):
+    return jsonify({
+        "success": False,
+        'error': error.status_code,
+        'message': error.error['description']
+    }), error.status_code
+
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    return jsonify({'success': False,
+                    'error': 500,
+                    'message': 'internal server error'
+                    }), 500
+
+
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({'success': False,
+                    'error': 400,
+                    'message': 'bad request'
+                    }), 400    
 
 
 
