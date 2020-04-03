@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, render_template, jsonify, request, redirect, make_response 
 from models import db, db_path, setup_db, Game, Member, Location, Event, Club
 from forms import *
-from auth import AuthError, requires_auth
+from auth import AuthError, requires_auth, get_auth0_user_id_from_cookie_token
 
 SECRET_KEY=os.urandom(32)###
 
@@ -17,11 +17,12 @@ setup_db(app, db_path)
 CLUB_NAME=Club.query.first().name
 ##
 app.jinja_env.globals['CLUB_NAME']=CLUB_NAME
+
 #HELPERS#
-def get_current_user_auth0_id(user_id=1): #######################implement this function later, for now it returns auth0userid of given id's member,
-  currmember=Member.query.filter_by(id=user_id).one_or_none()
-  auth0_user_id=currmember.auth0_user_id
-  return auth0_user_id
+def get_current_member_object():
+  current_user=Member.query.filter_by(auth0_user_id=get_auth0_user_id_from_cookie_token()).one_or_none()
+  return current_user
+
 #
 
 @app.route('/login')
@@ -41,7 +42,8 @@ def store_token_as_a_cookie():
 @app.route('/')
 def index(payload=None):
   club=Club.query.first()
-  return render_template('pages/home.html',club=club)
+  current_user=get_current_member_object()
+  return render_template('pages/home.html',club=club,current_user=current_user)
 
 @app.route('/games/all')
 def get_all_games():
@@ -95,7 +97,7 @@ def get_event_edit_form(event_id):
 def join_event(event_id):
   try:
     event=Event.query.filter_by(id=event_id).one_or_none()
-    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(5)).one_or_none()#####
+    current_user=get_current_member_object()
     if current_user not in event.players and len(event.players)<event.max_players:
       event.players.append(current_user)
     db.session.commit()
@@ -242,7 +244,7 @@ def create_game():
     title=request.form.get('title')
     link=request.form.get('link')
     new_game=Game(title=title,link=link)
-    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(5)).one_or_none()#####
+    current_user=get_current_member_object()
     new_game.owners.append(current_user)
     db.session.add(new_game)
     db.session.commit()
@@ -262,8 +264,7 @@ def get_user_form():
 def create_user():
   try:
     username=request.form.get('username')
-    #auth0_user_id=get_current_user_auth0_id()
-    auth0_user_id='thisisnotrealauth0idbutshoulddoitfornow123'####
+    auth0_user_id=get_auth0_user_id_from_cookie_token()
     img_link=request.form.get('img_link')
     description=request.form.get('description')
     
@@ -310,8 +311,9 @@ def create_event():
     time=request.form.get('time')
     max_players=request.form.get('max_players')
     description=request.form.get('description')
-    host_id=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(5)).one_or_none().id#####
-    players=[Member.query.filter_by(auth0_user_id=get_current_user_auth0_id(5)).one_or_none()]#####
+    host=get_current_member_object()
+    host_id=host.id
+    players=[host]
     
     if request.form.get('location')=='0': #this will run when user chose 'a new location'
       location_name=request.form.get('location_name')
@@ -380,7 +382,7 @@ def edit_club_info():
 def declare_ownership_of_existing_game(game_id):
   try:
     game=Game.query.filter_by(id=game_id).one_or_none()
-    current_user=Member.query.filter_by(auth0_user_id=get_current_user_auth0_id()).one_or_none()####
+    current_user=get_current_member_object()
     if game not in current_user.ownership:
       current_user.ownership.append(game)
       db.session.commit()
@@ -392,13 +394,15 @@ def declare_ownership_of_existing_game(game_id):
   return redirect('/games/all')
 
 @app.route('/games/<int:game_id>/edit')
-def get_game_edit_form(game_id):
+@requires_auth(permission='edit:games')
+def get_game_edit_form(permission, game_id):
   game=Game.query.filter_by(id=game_id).one_or_none()
   form=GameForm()
   return render_template('forms/edit_game.html',game=game,form=form)
 
 @app.route('/games/<int:game_id>/edit',methods=["POST"])
-def edit_game(game_id):
+@requires_auth(permission='edit:games')
+def edit_game(permission, game_id):
   try:
     game=Game.query.filter_by(id=game_id).one_or_none()
     game.title=request.form.get('title')

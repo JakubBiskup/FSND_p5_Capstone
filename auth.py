@@ -37,19 +37,6 @@ def get_token_from_cookie():
     return token
 
 
-def check_permissions(permission, payload):
-    if 'permissions' not in payload:
-        raise AuthError({'code': 'permissions_missing',
-                         'description': ('"permissions" '
-                                         'are expected in token payload')},
-                        401)
-    if permission not in payload['permissions']:
-        raise AuthError({'code': 'not_authorized',
-                         'description': ('You do not have permission '
-                                         'to perform this action')},
-                        403)
-    return True
-
 
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
@@ -101,6 +88,19 @@ def verify_decode_jwt(token):
                      }, 400)
 
 
+def check_permissions(permission, payload):
+    if 'permissions' not in payload:
+        raise AuthError({'code': 'permissions_missing',
+                         'description': ('"permissions" '
+                                         'are expected in token payload')},
+                        401)
+    if permission not in payload['permissions']:
+        raise AuthError({'code': 'not_authorized',
+                         'description': ('You do not have permission '
+                                         'to perform this action')},
+                        403)
+    return True
+
 def requires_auth(permission=None):
     def requires_auth_decorator(f):
         @wraps(f)
@@ -113,3 +113,12 @@ def requires_auth(permission=None):
 
         return wrapper
     return requires_auth_decorator
+
+def get_auth0_user_id_from_cookie_token():
+    try:
+        token=get_token_from_cookie()
+        payload=verify_decode_jwt(token)
+        sub=payload['sub']
+    except:
+        return None
+    return sub
