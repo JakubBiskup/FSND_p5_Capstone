@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, render_template, jsonify, request, redirect, make_response 
 from models import db, db_path, setup_db, Game, Member, Location, Event, Club
 from forms import *
-from auth import AuthError, requires_auth, get_auth0_user_id_from_cookie_token
+from auth import AuthError, requires_auth, get_auth0_user_id_from_cookie_token, check_auth
 
 SECRET_KEY=os.urandom(32)###
 
@@ -40,7 +40,7 @@ def store_token_as_a_cookie():
   return response
 
 @app.route('/')
-def index(payload=None):
+def index():
   club=Club.query.first()
   current_user=get_current_member_object()
   return render_template('pages/home.html',club=club,current_user=current_user)
@@ -395,14 +395,14 @@ def declare_ownership_of_existing_game(game_id):
 
 @app.route('/games/<int:game_id>/edit')
 @requires_auth(permission='edit:games')
-def get_game_edit_form(permission, game_id):
+def get_game_edit_form(game_id):
   game=Game.query.filter_by(id=game_id).one_or_none()
   form=GameForm()
   return render_template('forms/edit_game.html',game=game,form=form)
 
 @app.route('/games/<int:game_id>/edit',methods=["POST"])
 @requires_auth(permission='edit:games')
-def edit_game(permission, game_id):
+def edit_game(game_id):
   try:
     game=Game.query.filter_by(id=game_id).one_or_none()
     game.title=request.form.get('title')
@@ -454,9 +454,17 @@ def delete_game(game_id):
 def delete_event(event_id):
   try:
     event=Event.query.filter_by(id=event_id).one_or_none()
-    db.session.delete(event)
-    db.session.commit()
-    return jsonify({'success': True}), 200
+    if get_auth0_user_id_from_cookie_token()==event.host.auth0_user_id:
+      db.session.delete(event)
+      db.session.commit()
+      return jsonify({'success': True}), 200
+    else:
+      if check_auth(permission='delete:events'):
+        db.session.delete(event)
+        db.session.commit()
+        return jsonify({'success': True}), 200
+      
+
   except Exception as e:
     db.session.rollback()
     print(e)

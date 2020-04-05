@@ -109,7 +109,7 @@ def requires_auth(permission=None):
             payload = verify_decode_jwt(token)
             if permission:
                 check_permissions(permission, payload)
-            return f(payload, *args, **kwargs)
+            return f(*args, **kwargs)
 
         return wrapper
     return requires_auth_decorator
@@ -122,3 +122,9 @@ def get_auth0_user_id_from_cookie_token():
     except:
         return None
     return sub
+
+def check_auth(permission):
+    token=get_token_from_cookie()
+    payload=verify_decode_jwt(token)
+    check_permissions(permission, payload)
+    return True
