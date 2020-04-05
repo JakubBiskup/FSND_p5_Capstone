@@ -10,7 +10,24 @@
 <button style="background-color: brown;" onclick="window.location.href = '/members/{{member.id}}/detailed'">Get details (only for members)</button>
 <div class="user_collection">
     <h2 style="font-size: 250%;">{{member.username}}'s games collection:</h2>
-    <ul>{% for game in member.ownership %}<li><a href='{{game.link}}''>{{game.title}}</li>{% endfor %}
+    <ul>{% for game in member.ownership %}<li><a href='{{game.link}}'>{{game.title}}</a><button class="delete-button" style="background-color: red;" data-id="{{game.id}}">&cross;</button></li>{% endfor %}
     </ul>
 </div>
+<script>
+    const deleteButtons = document.querySelectorAll('.delete-button')
+    for (let i=0;i<deleteButtons.length;i++) {
+        const deleteButton=deleteButtons[i];
+        deleteButton.onclick=function(e) {
+            const gameID=e.target.dataset['id'];
+            fetch('/games/'+gameID+'/unown', {
+                method: 'DELETE'
+            })
+            .then(function() {
+                location.reload();
+            })
+
+        }
+    }
+
+</script>
 {% endblock %}

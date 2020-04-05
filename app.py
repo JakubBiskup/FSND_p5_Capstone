@@ -393,6 +393,31 @@ def declare_ownership_of_existing_game(game_id):
     db.session.close()
   return redirect('/games/all')
 
+@app.route('/games/<int:game_id>/unown', methods=['DELETE'])
+def cancel_ownage_of_game(game_id):
+  try:
+    current_user=get_current_member_object()
+    game=Game.query.filter_by(id=game_id).one_or_none()
+    games_of_user=current_user.ownership
+    if game in games_of_user:
+      games_of_user.remove(game)
+      print(len(game.owners))
+      if len(game.owners)==0:
+        db.session.delete(game)
+        db.session.commit()
+        db.session.close()
+        return jsonify({'success': True}), 200
+      else:
+        db.session.commit()
+        db.session.close()
+        return jsonify({'success': True}), 200
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+    db.session.close()
+    return jsonify({'success': False}), 400
+      
+
 @app.route('/games/<int:game_id>/edit')
 @requires_auth(permission='edit:games')
 def get_game_edit_form(game_id):
