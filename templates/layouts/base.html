@@ -21,7 +21,7 @@
                 font-size: 240%;
             }
             a.topright {
-                color:red;
+                color: yellow;
                 float: right;
 
             }
@@ -50,9 +50,18 @@
             <a href="/members/all">Members</a>
             <a href="/events/all">Events</a>
             <a href="/">Home</a>
-            <button class="topright button" onclick="window.location.href = 'https://fsndtest.eu.auth0.com/authorize?audience=BishopGaming&response_type=token&client_id=F1xicuNZ8EP29PlFR1rzgIhDchQ2ItXO&redirect_uri=http://127.0.0.1:5000/login';">Log In</button>
-            <a href="somelink" class="topright">my profile</a>
+            {% if not current_user %}<button class="topright button" onclick="window.location.href = 'https://fsndtest.eu.auth0.com/authorize?audience=BishopGaming&response_type=token&client_id=F1xicuNZ8EP29PlFR1rzgIhDchQ2ItXO&redirect_uri=http://127.0.0.1:5000/login';">Log In</button>{% endif %}
+            {% if current_user %}<a href="/members/{{current_user.id}}" class="topright">{{current_user.username}}</a> 
+            <button id="logout"class="topright button">Log Out</button>{% endif %}
         </div>
+        <script>
+            const logoutButton=document.querySelector('#logout')
+            logoutButton.onclick=function(e) {
+                document.cookie = "token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+                window.location.href = 'https://fsndtest.eu.auth0.com/v2/logout?returnTo=http://127.0.0.1:5000/';
+
+            }
+        </script>
         {% block content %}{% endblock %}
     </body>
 </html>
