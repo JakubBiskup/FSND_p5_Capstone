@@ -113,6 +113,22 @@ def join_event(event_id):
     db.session.close()
     return redirect(f"/events/{event_id}")
 
+@app.route('/events/<int:event_id>/unjoin', methods=['PATCH'])
+def leave_event(event_id):
+  try:
+    event=Event.query.filter_by(id=event_id).one_or_none()
+    current_user=get_current_member_object()
+    if current_user in event.players:
+      event.players.remove(current_user)
+    db.session.commit()
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+  finally:
+    db.session.close()
+    return redirect(f"/events/{event_id}")
+
+
 
 
 @app.route('/events/<int:event_id>/edit', methods=["POST"])
