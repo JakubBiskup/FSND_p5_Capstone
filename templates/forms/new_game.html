@@ -2,8 +2,13 @@
 {% block title %} Add a new game {% endblock %}
 {% block content %}
 <h1>Add a new game to your collection</h1>
-<p>Please make sure that the game you are adding is not in club collection alredy.</p>
+<p>Choose a game from the list and leave remaining fields blank OR, ONLY if your game is not on the list, set Game to "new game" and enter title and link to a page describing the game</p>
 <form action="" method="POST">
+    <p>
+        {{form.game.label}}<br>
+        {{form.game(default=0)}}
+    </p>
+    
     <p>
         {{form.title.label}}<br>
         {{form.title(size=40)}}

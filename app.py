@@ -155,12 +155,14 @@ def edit_event(event_id):
 @app.route('/members/<int:member_id>')
 def get_userpage(member_id):
   member=Member.query.filter_by(id=member_id).first()
-  return render_template('pages/user.html', member=member)
+  games_count=len(member.ownership)
+  return render_template('pages/user.html', member=member, games_count=games_count)
 
 @app.route('/members/<int:member_id>/detailed')
 def get_userpage_with_details(member_id):
   member=Member.query.filter_by(id=member_id).first()
-  return render_template('pages/detaileduser.html', member=member)
+  games_count=len(member.ownership)
+  return render_template('pages/detaileduser.html', member=member, games_count=games_count)
 
 @app.route('/members/<int:member_id>/edit')
 def get_user_edit_form(member_id):
@@ -236,24 +238,36 @@ def edit_user(member_id):
 @app.route('/games/create')
 def get_game_form():
   form=GameForm()
+  form.game.choices=[(g.id, g.title) for g in Game.query.all()]
+  form.game.choices.append((0,"new game"))
+  form.game.default=0
+  form.process()
   return render_template('forms/new_game.html', form=form)
 
 @app.route('/games/create', methods=['POST'])
-def create_game():
+def add_game():
   try:
+    current_user=get_current_member_object()
+    game_id=request.form.get('game')
     title=request.form.get('title')
     link=request.form.get('link')
-    new_game=Game(title=title,link=link)
-    current_user=get_current_member_object()
-    new_game.owners.append(current_user)
-    db.session.add(new_game)
-    db.session.commit()
+    if game_id is not '0':
+      game=Game.query.filter_by(id=game_id).one_or_none()
+      if game not in current_user.ownership:
+        current_user.ownership.append(game)
+        db.session.commit()
+    else:
+      new_game=Game(title=title,link=link)
+      db.session.add(new_game)
+      current_user.ownership.append(new_game)
+      db.session.commit()
   except Exception as e:
     db.session.rollback()
     print(e)
   finally:
+    current_user_id=current_user.id
     db.session.close()
-    return redirect('/games/all')
+    return redirect(f'/members/{current_user_id}')
 
 @app.route('/members/create')
 def get_user_form():
@@ -401,7 +415,6 @@ def cancel_ownage_of_game(game_id):
     games_of_user=current_user.ownership
     if game in games_of_user:
       games_of_user.remove(game)
-      print(len(game.owners))
       if len(game.owners)==0:
         db.session.delete(game)
         db.session.commit()

@@ -5,8 +5,9 @@ from wtforms.fields.html5 import DateTimeField
 from wtforms.widgets import TextArea
 
 class GameForm(Form):
-    title=StringField('Title', validators=[DataRequired()])
-    link=StringField('Link', validators=[URL(), DataRequired()])
+    title=StringField('Title')
+    link=StringField('Link', validators=[URL()])
+    game=SelectField('Game',choices=[],validators=[DataRequired()])
     submit=SubmitField('Save')
 
 class MemberForm(Form):

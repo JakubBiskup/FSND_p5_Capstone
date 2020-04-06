@@ -52,8 +52,8 @@
     </table>
 </div>
 <div class="user_collection">
-    <h2 style="font-size: 250%;">{{member.username}}'s games collection:</h2>
-    <ul>{% for game in member.ownership %}<li><a href='{{game.link}}''>{{game.title}}</li>{% endfor %}
+    <h2 style="font-size: 250%;">{{member.username}}'s games collection [{{games_count}}] :</h2>
+    <ul>{% for game in member.ownership %}<li><a href='{{game.link}}'>{{game.title}}</li>{% endfor %}
     </ul>
 </div>
 {% endblock %}
