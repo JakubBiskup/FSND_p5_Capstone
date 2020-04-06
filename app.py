@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from flask import Flask, render_template, jsonify, request, redirect, make_response 
+from flask import Flask, render_template, jsonify, request, redirect, make_response, abort
 from models import db, db_path, setup_db, Game, Member, Location, Event, Club
 from forms import *
 from auth import AuthError, requires_auth, get_auth0_user_id_from_cookie_token, check_auth
@@ -73,7 +73,7 @@ def get_all_events():
   past_events.reverse()
   return render_template('pages/events.html',past=past_events, future=future_events, joined=players_num)
 
-@app.route('/events/<int:event_id>')
+@app.route('/events/<int:event_id>') #################################should this be public?
 def get_event_page(event_id):
   event=Event.query.filter_by(id=event_id).first()
   current_players=event.players####
@@ -82,7 +82,10 @@ def get_event_page(event_id):
 
 @app.route('/events/<int:event_id>/edit')
 def get_event_edit_form(event_id):
+  current_user=get_current_member_object()
   event=Event.query.filter_by(id=event_id).one_or_none()
+  if event.host!=current_user:
+    abort(401)
   form=EditEventForm()
   form.location.choices=[(l.id, l.name) for l in Location.query.all()]
   form.location.choices.append((0,'a new location'))
@@ -93,7 +96,9 @@ def get_event_edit_form(event_id):
   form.description.data=event.description
   return render_template('forms/edit_event.html', event=event, form=form)
 
+
 @app.route('/events/<int:event_id>/join', methods=["PATCH"])
+@requires_auth(permission='join:events')
 def join_event(event_id):
   try:
     event=Event.query.filter_by(id=event_id).one_or_none()
@@ -112,13 +117,16 @@ def join_event(event_id):
 
 @app.route('/events/<int:event_id>/edit', methods=["POST"])
 def edit_event(event_id):
+  current_user=get_current_member_object()
+  event=Event.query.filter_by(id=event_id).one_or_none()
+  if current_user!=event.host:
+    abort(401)
   try:
     name=request.form.get('name')
     description=request.form.get('description')
     time=request.form.get('time')
     games=[Game.query.filter_by(id=game_id).one_or_none() for game_id in request.form.getlist('games')]
     max_players=request.form.get('max_players')
-    event=Event.query.filter_by(id=event_id).one_or_none()
     if request.form.get('location')=='0': #this will run when user chose 'a new location'
       location_name=request.form.get('location_name')
       country=request.form.get('country')
@@ -159,6 +167,7 @@ def get_userpage(member_id):
   return render_template('pages/user.html', member=member, games_count=games_count)
 
 @app.route('/members/<int:member_id>/detailed')
+@requires_auth('read:member-details')
 def get_userpage_with_details(member_id):
   member=Member.query.filter_by(id=member_id).first()
   games_count=len(member.ownership)
