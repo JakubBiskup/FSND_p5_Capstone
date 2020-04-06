@@ -173,21 +173,23 @@ def get_userpage_with_details(member_id):
   games_count=len(member.ownership)
   return render_template('pages/detaileduser.html', member=member, games_count=games_count)
 
-@app.route('/members/<int:member_id>/edit')
-def get_user_edit_form(member_id):
-  user_before_edit=Member.query.filter_by(id=member_id).one_or_none()
+@app.route('/members/me/edit')
+def get_user_edit_form():
+  current_user=get_current_member_object()
   form = MemberForm()
-  form.description.data=user_before_edit.description
-  return render_template('forms/edit_user.html', form=form, member=user_before_edit)
+  form.description.data=current_user.description
+  return render_template('forms/edit_user.html', form=form, member=current_user)
 
-@app.route('/members/<int:member_id>/edit', methods=["POST"])
-def edit_user(member_id):
+@app.route('/members/me/edit', methods=["POST"])
+def edit_user():
   try:
-    user=Member.query.filter_by(id=member_id).one_or_none()
+    user=get_current_member_object()
     username=request.form.get('username')
     img_link=request.form.get('img_link')
     description=request.form.get('description')
     
+    id_for_redirect=user.id
+
     first_name=request.form.get('first_name')
     last_name=request.form.get('last_name')
     phone=request.form.get('phone')
@@ -230,7 +232,7 @@ def edit_user(member_id):
         if username:
           home_name=username+"'s home"
         else:
-          home_name=Member.query.filter_by(id=member_id).one_or_none().username +"'s home"
+          home_name=user.username +"'s home"
         if appartment_num=='':
           appartment_num=None
         new_home=Location(name=home_name,country=country,city=city,street=street,house_num=house_num,appartment_num=appartment_num)
@@ -242,7 +244,7 @@ def edit_user(member_id):
     print(e)
   finally:
     db.session.close()
-    return redirect(f"/members/{member_id}")
+    return redirect(f"/members/{id_for_redirect}")
 
 @app.route('/games/create')
 def get_game_form():
