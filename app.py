@@ -247,6 +247,7 @@ def edit_user():
     return redirect(f"/members/{id_for_redirect}")
 
 @app.route('/games/create')
+@requires_auth('add:games')
 def get_game_form():
   form=GameForm()
   form.game.choices=[(g.id, g.title) for g in Game.query.all()]
@@ -256,6 +257,7 @@ def get_game_form():
   return render_template('forms/new_game.html', form=form)
 
 @app.route('/games/create', methods=['POST'])
+@requires_auth('add:games')
 def add_game():
   try:
     current_user=get_current_member_object()
@@ -322,6 +324,7 @@ def create_user():
     return render_template('pages/user.html', member=Member.query.filter_by(auth0_user_id=auth0_user_id).one_or_none())
     
 @app.route('/events/create')
+@requires_auth('create:events')
 def get_event_form():
   form=EventForm()
   form.location.choices=[(l.id, l.name) for l in Location.query.all()]
@@ -330,6 +333,7 @@ def get_event_form():
   return render_template('forms/new_event.html', form=form)
 
 @app.route('/events/create', methods=["POST"])
+@requires_auth('create:events')
 def create_event():
   try:
     name=request.form.get('name')
@@ -370,6 +374,7 @@ def create_event():
     return redirect('/events/all')
 
 @app.route('/home/edit')
+@requires_auth('edit:club')
 def get_club_form():
   form=ClubForm()
   old_club=Club.query.first()
@@ -378,6 +383,7 @@ def get_club_form():
 
 
 @app.route('/home/edit', methods=['POST'])
+@requires_auth('edit:club')
 def edit_club_info():
   try:
     name=request.form.get('name')
@@ -403,7 +409,8 @@ def edit_club_info():
     db.session.close()
   return redirect('/')
 
-@app.route('/games/<int:game_id>/own', methods=['PATCH'])
+@app.route('/games/<int:game_id>/own', methods=['PATCH'])########################do I need this endpoint?
+@requires_auth('add:games')
 def declare_ownership_of_existing_game(game_id):
   try:
     game=Game.query.filter_by(id=game_id).one_or_none()
@@ -418,7 +425,7 @@ def declare_ownership_of_existing_game(game_id):
     db.session.close()
   return redirect('/games/all')
 
-@app.route('/games/<int:game_id>/unown', methods=['DELETE'])
+@app.route('/games/<int:game_id>/unown', methods=['DELETE'])###################no need for auth (?)
 def cancel_ownage_of_game(game_id):
   try:
     current_user=get_current_member_object()
@@ -487,6 +494,7 @@ def search_results_game():
   return render_template('pages/search_game.html', search=search, results=results, count=count)
 
 @app.route('/games/<int:game_id>/delete', methods=["DELETE"])
+@requires_auth('delete:games')
 def delete_game(game_id):
   try:
     game=Game.query.filter_by(id=game_id).one_or_none()
@@ -500,6 +508,7 @@ def delete_game(game_id):
     return redirect('/games/all')
 
 @app.route('/events/<int:event_id>/delete', methods=["DELETE"])
+@requires_auth('delete:games')
 def delete_event(event_id):
   try:
     event=Event.query.filter_by(id=event_id).one_or_none()
@@ -512,7 +521,8 @@ def delete_event(event_id):
         db.session.delete(event)
         db.session.commit()
         return jsonify({'success': True}), 200
-      
+      else:
+        abort(403)
 
   except Exception as e:
     db.session.rollback()
@@ -522,6 +532,7 @@ def delete_event(event_id):
     
 
 @app.route('/members/<int:member_id>/delete', methods=["DELETE"])
+@requires_auth('delete:members')
 def delete_member(member_id):
   try:
     member=Member.query.filter_by(id=member_id).one_or_none()
