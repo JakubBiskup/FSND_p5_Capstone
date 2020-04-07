@@ -42,29 +42,21 @@
 <div class="centercontent">
     <div class="somegames">
         <h3>Games recently added to collection</h3>
-        <ul>
-            <li><a href="somelink">Some Game Title</a></li>
-            <li><a href="somelink">Some Game Title</a></li>
-            <li><a href="somelink">Some Game Title</a></li>
-            <li><a href="somelink">Some Game Title</a></li>
-            <li><a href="somelink">Some Game Title</a></li>
+        <ul>{% for game in newer_games %}
+            <li><a href={{game.link}}>{{game.title}}</a></li>
+            {% endfor %}
         </ul>
     </div>
     <div class=admins>
         <h3>Club admins</h3>
-        <ul>
-            <li><a href="somelink">Some admin</a></li>
-            <li><a href="somelink">Some admin</a></li>
+        <ul>{% for admin in admins %}
+            <li><a href="/members/{{admin.id}}">{{admin.username}}</a></li>
+            {% endfor %}
         </ul>
     </div>
     <div class="somemembers">
-        <h3>Some members of our club</h3>
+        <h3></h3>
         <ul>
-            <li><a href="somelink">Some username</a></li>
-            <li><a href="somelink">Some username</a></li>
-            <li><a href="somelink">Some username</a></li>
-            <li><a href="somelink">Some username</a></li>
-            <li><a href="somelink">Some username</a></li>
         </ul>
     </div>
 </div>

@@ -31,34 +31,42 @@ def get_continue_button():
 
 @app.route('/login', methods=["POST"])
 def store_token_as_a_cookie():
-  after_hash=request.form.get('after_hash')
-  hash_split=after_hash.split('&')[0]
-  token_string=hash_split.split('=')[1]
-  token='Bearer '+token_string
-  response=make_response(redirect('/'))
-  response.set_cookie('token',token)
-  return response
+  try:
+    after_hash=request.form.get('after_hash')
+    hash_split=after_hash.split('&')[0]
+    token_string=hash_split.split('=')[1]
+    token='Bearer '+token_string
+    response=make_response(redirect('/'))
+    response.set_cookie('token',token)
+    return response
+  except:
+    abort(401)
 
 @app.route('/')
 def index():
   club=Club.query.first()
   current_user=get_current_member_object()
-  return render_template('pages/home.html',club=club,current_user=current_user)
+  newer_games=Game.query.order_by(Game.id.desc()).limit(5)
+  admins=Member.query.filter_by(admin=True).all()
+  return render_template('pages/home.html',club=club,current_user=current_user,newer_games=newer_games,admins=admins)
 
 @app.route('/games/all')
 def get_all_games():
+  current_user=get_current_member_object()
   games=Game.query.all()
   games_num=str(len(games))
-  return render_template('pages/allgames.html', games=games,games_num=games_num)
+  return render_template('pages/allgames.html', games=games,games_num=games_num,current_user=current_user)
 
 @app.route('/members/all')
 def get_all_members():
+  current_user=get_current_member_object()
   members=Member.query.order_by(Member.username).all() #### change this later to ignore guests(users not granted member status yet)
   members_num=str(len(members))
-  return render_template('pages/members.html',members=members,members_num=members_num)
+  return render_template('pages/members.html',members=members,members_num=members_num,current_user=current_user)
 
 @app.route('/events/all')
 def get_all_events():
+  current_user=get_current_member_object()
   events=Event.query.order_by(Event.time).all()
   past_events=[]
   future_events=[]
@@ -71,14 +79,17 @@ def get_all_events():
       future_events.append(e)
     players_num[e.name]=len(e.players)
   past_events.reverse()
-  return render_template('pages/events.html',past=past_events, future=future_events, joined=players_num)
+  return render_template('pages/events.html',past=past_events, future=future_events, joined=players_num,current_user=current_user)
 
 @app.route('/events/<int:event_id>') #################################should this be public?
 def get_event_page(event_id):
-  event=Event.query.filter_by(id=event_id).first()
+  current_user=get_current_member_object()
+  event=Event.query.filter_by(id=event_id).one_or_none()
+  if event is None:
+    abort(404)
   current_players=event.players####
   current_players_num=len(current_players)####
-  return render_template('pages/event.html', event=event, current_players_num=current_players_num)
+  return render_template('pages/event.html', event=event, current_players_num=current_players_num,current_user=current_user)
 
 @app.route('/events/<int:event_id>/edit')
 def get_event_edit_form(event_id):
@@ -94,7 +105,7 @@ def get_event_edit_form(event_id):
   form.games.default=[g.id for g in event.games]
   form.process()
   form.description.data=event.description
-  return render_template('forms/edit_event.html', event=event, form=form)
+  return render_template('forms/edit_event.html', event=event, form=form,current_user=current_user)
 
 
 @app.route('/events/<int:event_id>/join', methods=["PATCH"])
@@ -178,23 +189,25 @@ def edit_event(event_id):
     
 @app.route('/members/<int:member_id>')
 def get_userpage(member_id):
+  current_user=get_current_member_object()
   member=Member.query.filter_by(id=member_id).first()
   games_count=len(member.ownership)
-  return render_template('pages/user.html', member=member, games_count=games_count)
+  return render_template('pages/user.html', member=member, games_count=games_count, current_user=current_user)
 
 @app.route('/members/<int:member_id>/detailed')
 @requires_auth('read:member-details')
 def get_userpage_with_details(member_id):
+  current_user=get_current_member_object()
   member=Member.query.filter_by(id=member_id).first()
   games_count=len(member.ownership)
-  return render_template('pages/detaileduser.html', member=member, games_count=games_count)
+  return render_template('pages/detaileduser.html', member=member, games_count=games_count,current_user=current_user)
 
 @app.route('/members/me/edit')
 def get_user_edit_form():
   current_user=get_current_member_object()
   form = MemberForm()
   form.description.data=current_user.description
-  return render_template('forms/edit_user.html', form=form, member=current_user)
+  return render_template('forms/edit_user.html', form=form, member=current_user, current_user=current_user)
 
 @app.route('/members/me/edit', methods=["POST"])
 def edit_user():
@@ -265,12 +278,13 @@ def edit_user():
 @app.route('/games/create')
 @requires_auth('add:games')
 def get_game_form():
+  current_user=get_current_member_object()
   form=GameForm()
   form.game.choices=[(g.id, g.title) for g in Game.query.all()]
   form.game.choices.append((0,"new game"))
   form.game.default=0
   form.process()
-  return render_template('forms/new_game.html', form=form)
+  return render_template('forms/new_game.html', form=form, current_user=current_user)
 
 @app.route('/games/create', methods=['POST'])
 @requires_auth('add:games')
@@ -342,11 +356,12 @@ def create_user():
 @app.route('/events/create')
 @requires_auth('create:events')
 def get_event_form():
+  current_user=get_current_member_object()
   form=EventForm()
   form.location.choices=[(l.id, l.name) for l in Location.query.all()]
   form.location.choices.append((0,'a new location'))
   form.games.choices=[(g.id, g.title) for g in Game.query.all()]
-  return render_template('forms/new_event.html', form=form)
+  return render_template('forms/new_event.html', form=form,current_user=current_user)
 
 @app.route('/events/create', methods=["POST"])
 @requires_auth('create:events')
@@ -392,10 +407,11 @@ def create_event():
 @app.route('/home/edit')
 @requires_auth('edit:club')
 def get_club_form():
+  current_user=get_current_member_object()
   form=ClubForm()
   old_club=Club.query.first()
   form.welcoming_text.data=old_club.welcoming_text
-  return render_template('forms/edit_club.html', form=form, club=old_club)
+  return render_template('forms/edit_club.html', form=form, club=old_club,current_user=current_user)
 
 
 @app.route('/home/edit', methods=['POST'])
@@ -441,7 +457,7 @@ def declare_ownership_of_existing_game(game_id):
     db.session.close()
   return redirect('/games/all')
 
-@app.route('/games/<int:game_id>/unown', methods=['DELETE'])###################no need for auth (?)
+@app.route('/games/<int:game_id>/unown', methods=['DELETE'])###################no need for auth (?), should this be delete or patch?
 def cancel_ownage_of_game(game_id):
   try:
     current_user=get_current_member_object()
@@ -468,9 +484,10 @@ def cancel_ownage_of_game(game_id):
 @app.route('/games/<int:game_id>/edit')
 @requires_auth(permission='edit:games')
 def get_game_edit_form(game_id):
+  current_user=get_current_member_object()
   game=Game.query.filter_by(id=game_id).one_or_none()
   form=GameForm()
-  return render_template('forms/edit_game.html',game=game,form=form)
+  return render_template('forms/edit_game.html',game=game,form=form,current_user=current_user)
 
 @app.route('/games/<int:game_id>/edit',methods=["POST"])
 @requires_auth(permission='edit:games')
@@ -490,24 +507,27 @@ def edit_game(game_id):
   
 @app.route('/members/search', methods=["POST"])
 def search_results_member():
+  current_user=get_current_member_object()
   search=request.form.get('search_term')
   results=Member.query.filter(Member.username.ilike(f'%{search}%')).all()
   count=len(results)
-  return render_template('pages/search_member.html', search=search, results=results, count=count)
+  return render_template('pages/search_member.html', search=search, results=results, count=count,current_user=current_user)
 
 @app.route('/events/search', methods=["POST"])
 def search_results_event():
+  current_user=get_current_member_object()
   search=request.form.get('search_term')
   results=Event.query.filter(Event.name.ilike(f'%{search}%')).order_by(Event.time).all()
   count=len(results)
-  return render_template('pages/search_event.html', search=search, results=results, count=count)
+  return render_template('pages/search_event.html', search=search, results=results, count=count, current_user=current_user)
 
 @app.route('/games/search', methods=["POST"])
 def search_results_game():
+  current_user=get_current_member_object()
   search=request.form.get('search_term')
   results=Game.query.filter(Game.title.ilike(f'%{search}%')).all()
   count=len(results)
-  return render_template('pages/search_game.html', search=search, results=results, count=count)
+  return render_template('pages/search_game.html', search=search, results=results, count=count, current_user=current_user)
 
 @app.route('/games/<int:game_id>/delete', methods=["DELETE"])
 @requires_auth('delete:games')
