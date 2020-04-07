@@ -1,6 +1,13 @@
 {% extends "layouts/base.html" %}
 {% block title %} Events {% endblock %}
 {% block content %}
+{% if current_user.member %}
+<div class="createevent">
+    <br>
+    <br>
+    <a href="/events/create"><button style="font-size: 3em; background-color: green; color:white" >&plus; Create event</button></a>
+</div>
+{% endif %}
 <div class="searchevent">
     <p>Search for an event:</p>
     <form class="search" method="post" action="/events/search">
