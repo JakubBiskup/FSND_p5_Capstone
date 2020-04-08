@@ -91,9 +91,15 @@ def get_event_page(event_id):
   event=Event.query.filter_by(id=event_id).one_or_none()
   if event is None:
     abort(404)
+  did_join=False
+  if current_user in event.players:
+    did_join=True
+  is_host=False
+  if current_user==event.host:
+    is_host=True
   current_players=event.players####
   current_players_num=len(current_players)####
-  return render_template('pages/event.html', event=event, current_players_num=current_players_num,current_user=current_user)
+  return render_template('pages/event.html', event=event, current_players_num=current_players_num,did_join=did_join,is_host=is_host,current_user=current_user)
 
 @app.route('/events/<int:event_id>/edit')
 def get_event_edit_form(event_id):
@@ -121,12 +127,13 @@ def join_event(event_id):
     if current_user not in event.players and len(event.players)<event.max_players:
       event.players.append(current_user)
     db.session.commit()
+    db.session.close()
+    return jsonify({'success':True}), 200
   except Exception as e:
     db.session.rollback()
     print(e)
-  finally:
     db.session.close()
-    return redirect(f"/events/{event_id}")
+    return jsonify({'success':False}),500 ########################### change status code
 
 @app.route('/events/<int:event_id>/unjoin', methods=['PATCH'])
 def leave_event(event_id):
@@ -136,12 +143,13 @@ def leave_event(event_id):
     if current_user in event.players:
       event.players.remove(current_user)
     db.session.commit()
+    db.session.close()
+    return jsonify({'success':True}), 200
   except Exception as e:
     db.session.rollback()
     print(e)
-  finally:
     db.session.close()
-    return redirect(f"/events/{event_id}")
+    return jsonify({'success':False}),500
 
 
 

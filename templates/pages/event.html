@@ -1,9 +1,9 @@
 {% extends "layouts/base.html" %}
 {% block title %} {{event.name}} {% endblock %}
 {% block content %}
-<h1 style="font-size: 4rem;">{{event.name}}<button style="font-size: xx-large; background-color: rgb(194, 18, 18);" class="delete-button">&cross;
-</button><button style="background-color: rgb(90, 155, 25); font-size: xx-large; color: rgb(255, 255, 255);" class="join-button">JOIN</button>
-<button style="background-color: rgb(25, 127, 161); font-size: xx-large; color: rgb(255, 255, 255);" class="unjoin-button">Leave event</button></h1>
+<h1 style="font-size: 4rem;">{{event.name}}{% if current_user.admin or is_host %}<button style="font-size: xx-large; background-color: rgb(194, 18, 18);" class="delete-button">&cross;</button>{% endif %}
+    {% if current_user.member and did_join==False %}<button style="background-color: rgb(90, 155, 25); font-size: xx-large; color: rgb(255, 255, 255);" class="join-button">JOIN</button>{% endif %}
+    {% if did_join %}<button style="background-color: rgb(25, 127, 161); font-size: xx-large; color: rgb(255, 255, 255);" class="unjoin-button">Withdraw</button></h1>{% endif %}
 
 <h2>Seats taken: {{current_players_num}}/{{event.max_players}}</h2>
 <h2>Location: {{event.location.name}}</h2>
@@ -20,6 +20,7 @@
     {% endfor %}
 </ul>
 <p>{{event.description}}</p>
+{% if current_user.member %}
 <table>Address
     <tr>
         <td>Country:</td>
@@ -42,7 +43,9 @@
         <td>{{event.location.appartment_num}}</td>
     </tr>
 </table>
+{% endif %}
 <script>
+    {% if current_user.admin or is_host %}
     const deleteButton=document.querySelector('.delete-button');
     deleteButton.onclick=function(e){
         console.log('event',e);
@@ -53,6 +56,8 @@
 			location.href='/events/all';
 		})
     }
+    {% endif %}
+    {% if current_user.member and did_join==False %}
     const joinButton=document.querySelector('.join-button');
     joinButton.onclick=function(e){
         console.log('event',e);
@@ -63,6 +68,8 @@
 			location.reload();
 		})
     }
+    {% endif %}
+    {% if did_join %}
     const unjoinButton=document.querySelector('.unjoin-button');
     unjoinButton.onclick=function(e){
         console.log('event',e);
@@ -73,6 +80,7 @@
 			location.reload();
 		})
     }
+    {% endif %}
 </script>
 
 
