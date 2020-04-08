@@ -544,7 +544,6 @@ def delete_game(game_id):
     return redirect('/games/all')
 
 @app.route('/events/<int:event_id>/delete', methods=["DELETE"])
-@requires_auth('delete:games')
 def delete_event(event_id):
   try:
     event=Event.query.filter_by(id=event_id).one_or_none()

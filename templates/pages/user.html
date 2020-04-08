@@ -14,6 +14,14 @@
         <li><a href="/games/create"><button style="background-color: green; color:white" >&plus;</button></a></li>
     </ul>
 </div>
+{% if current_user.admin %}
+<div>
+    <br>
+    <br>
+    <br>
+    <button style="font-size: xx-large; background-color: rgb(194, 18, 18);" class="memberdelete">&cross;</button>
+</div>
+{% endif %}
 <script>
     const deleteButtons = document.querySelectorAll('.delete-button')
     for (let i=0;i<deleteButtons.length;i++) {
@@ -29,6 +37,17 @@
 
         }
     }
+    const deleteButton = document.querySelector('.memberdelete')
+    deleteButton.onclick=function(e) {
+        fetch('/members/'+{{member.id}}+'/delete', {
+            method: 'DELETE'
+        })
+        .then(function() {
+            location.window.href="members/all";
+        })
+
+    }
+    
 
 </script>
 {% endblock %}
