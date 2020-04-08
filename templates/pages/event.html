@@ -2,6 +2,7 @@
 {% block title %} {{event.name}} {% endblock %}
 {% block content %}
 <h1 style="font-size: 4rem;">{{event.name}}{% if current_user.admin or is_host %}<button style="font-size: xx-large; background-color: rgb(194, 18, 18);" class="delete-button">&cross;</button>{% endif %}
+    {% if is_host %}<a href="/events/{{event.id}}/edit"><button style="background-color: rgb(124, 94, 59); font-size: xx-large; color: rgb(255, 255, 255);">Edit event</button></a>{% endif %}
     {% if current_user.member and did_join==False %}<button style="background-color: rgb(90, 155, 25); font-size: xx-large; color: rgb(255, 255, 255);" class="join-button">JOIN</button>{% endif %}
     {% if did_join %}<button style="background-color: rgb(25, 127, 161); font-size: xx-large; color: rgb(255, 255, 255);" class="unjoin-button">Withdraw</button></h1>{% endif %}
 

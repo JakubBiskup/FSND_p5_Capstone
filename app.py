@@ -85,7 +85,7 @@ def get_all_events():
   past_events.reverse()
   return render_template('pages/events.html',past=past_events, future=future_events, joined=players_num,current_user=current_user)
 
-@app.route('/events/<int:event_id>') #################################should this be public?
+@app.route('/events/<int:event_id>')
 def get_event_page(event_id):
   current_user=get_current_member_object()
   event=Event.query.filter_by(id=event_id).one_or_none()
@@ -97,16 +97,19 @@ def get_event_page(event_id):
   is_host=False
   if current_user==event.host:
     is_host=True
-  current_players=event.players####
-  current_players_num=len(current_players)####
+  current_players=event.players
+  current_players_num=len(current_players)
   return render_template('pages/event.html', event=event, current_players_num=current_players_num,did_join=did_join,is_host=is_host,current_user=current_user)
 
 @app.route('/events/<int:event_id>/edit')
 def get_event_edit_form(event_id):
   current_user=get_current_member_object()
   event=Event.query.filter_by(id=event_id).one_or_none()
-  if event.host!=current_user:
-    abort(401)
+  host=event.host
+  if host is None:
+    abort(403)
+  if host!=current_user:
+    abort(403)
   form=EditEventForm()
   form.location.choices=[(l.id, l.name) for l in Location.query.all()]
   form.location.choices.append((0,'a new location'))
@@ -149,7 +152,7 @@ def leave_event(event_id):
     db.session.rollback()
     print(e)
     db.session.close()
-    return jsonify({'success':False}),500
+    return jsonify({'success':False}),500 ###########################
 
 
 
