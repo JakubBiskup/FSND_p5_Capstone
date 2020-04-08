@@ -27,4 +27,22 @@
         {% endfor %}
     </table>
 </div>
+<div>
+    <h2>And {{guests_num}} registered guests</h2>
+</div>
+<div class="memberstable">
+    <table class="tableofmembers">
+        <th>Username</th>
+        <th>About</th>
+        <th>Rank</th>
+        {% for member in guests %}
+        <tr>
+            <td><a href="/members/{{member.id}}">{{member.username}}</a></td>
+            <td><p>{{member.description}}</p></td>
+            <td>{% if member.admin %}Admin{% endif %}{% if member.member %} member{% endif %}{% if not member.admin and not member.member %}guest{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
 {% endblock %}

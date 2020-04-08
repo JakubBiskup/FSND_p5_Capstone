@@ -48,21 +48,25 @@ def index():
   current_user=get_current_member_object()
   newer_games=Game.query.order_by(Game.id.desc()).limit(5)
   admins=Member.query.filter_by(admin=True).all()
-  return render_template('pages/home.html',club=club,current_user=current_user,newer_games=newer_games,admins=admins)
+  past_events = Event.query.filter(Event.time <= datetime.now()).order_by(Event.time.desc()).limit(5)
+  future_events = Event.query.filter(Event.time > datetime.now()).order_by(Event.time).limit(5)
+  return render_template('pages/home.html',club=club,current_user=current_user,newer_games=newer_games,admins=admins,past=past_events,future=future_events)
 
 @app.route('/games/all')
 def get_all_games():
   current_user=get_current_member_object()
-  games=Game.query.all()
-  games_num=str(len(games))
+  games=Game.query.order_by(Game.title).all()
+  games_num=len(games) #### would games.count() be better?
   return render_template('pages/allgames.html', games=games,games_num=games_num,current_user=current_user)
 
 @app.route('/members/all')
 def get_all_members():
   current_user=get_current_member_object()
-  members=Member.query.order_by(Member.username).all() #### change this later to ignore guests(users not granted member status yet)
-  members_num=str(len(members))
-  return render_template('pages/members.html',members=members,members_num=members_num,current_user=current_user)
+  members=Member.query.filter_by(member=True).order_by(Member.username).all() #### change this later to ignore guests(users not granted member status yet)
+  members_num=len(members)
+  guests=Member.query.filter_by(member=False).order_by(Member.username).all()
+  guests_num=len(guests)
+  return render_template('pages/members.html',members=members,members_num=members_num,guests=guests, guests_num=guests_num, current_user=current_user)
 
 @app.route('/events/all')
 def get_all_events():
@@ -547,7 +551,15 @@ def delete_game(game_id):
 def delete_event(event_id):
   try:
     event=Event.query.filter_by(id=event_id).one_or_none()
-    if get_auth0_user_id_from_cookie_token()==event.host.auth0_user_id:
+    host=event.host
+    if host is None: #in case of host not existing anymore #########################
+      if check_auth(permission='delete:events'):
+        db.session.delete(event)
+        db.session.commit()
+        return jsonify({'success': True}), 200
+      else:
+        abort(403)
+    if get_current_member_object()==host:
       db.session.delete(event)
       db.session.commit()
       return jsonify({'success': True}), 200
@@ -563,7 +575,7 @@ def delete_event(event_id):
     db.session.rollback()
     print(e)
     db.session.close()
-    return jsonify({'success': False})
+    return jsonify({'success': False}),500
     
 
 @app.route('/members/<int:member_id>/delete', methods=["DELETE"])

@@ -19,8 +19,8 @@
         <th>Owner(s)</th>
         {% for game in games %}
         <tr>
-            <td><a href="{{game.link}}">{{game.title}}</a><button class="delete-button" style="background-color: red;" data-id="{{game.id}}">&cross;</button></td>
-            <td>{% for owner in game.owners %}<a href="/members/{{owner.id}}">{{owner.username}}</a>     {% endfor%}<button data-id="{{game.id}}" class="own-button" style="background-color: green; color:white" >&plus;</button></td>
+            <td><a href="{{game.link}}">{{game.title}}</a>{% if current_user.admin %}<button class="delete-button" style="background-color: red;" data-id="{{game.id}}">&cross;</button><a href="/games/{{game.id}}/edit"><button>edit</button></a>{% endif %}</td>
+            <td>{% for owner in game.owners %}<a href="/members/{{owner.id}}">{{owner.username}}</a>     {% endfor%}{% if current_user.member and game not in current_user.ownership %}<button data-id="{{game.id}}" class="own-button" style="background-color: green; color:white" >&plus; me</button>{% endif %}</td>
 
         </tr>
         {% endfor %}

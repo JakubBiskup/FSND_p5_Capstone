@@ -63,23 +63,17 @@
 <div class="events">
     <h1>EVENTS</h1>
     <div class="future">
-        <h3>Future events</h3>
-        <ul>
-            <li><a href="somelink">Some event</a></li>
-            <li><a href="somelink">Some event</a></li>
-            <li><a href="somelink">Some event</a></li>
-            <li><a href="somelink">Some event</a></li>
-            <li><a href="somelink">Some event</a></li>
+        <h3>Upcoming events</h3>
+        <ul>{% for event in future %}
+            <li><a href="events/{{event.id}}">{{event.name}}</a></li>
+            {% endfor %}
         </ul>
     </div>
     <div class="past">
-        <h3>Past events</h3>
-        <ul>
-            <li><a href="somelink">Some event</a></li>
-            <li><a href="somelink">Some event</a></li>
-            <li><a href="somelink">Some event</a></li>
-            <li><a href="somelink">Some event</a></li>
-            <li><a href="somelink">Some event</a></li>
+        <h3>Recent events</h3>
+        <ul>{% for event in past %}
+            <li><a href="events/{{event.id}}">{{event.name}}</a></li>
+            {% endfor %}
         </ul>
     </div>
 
