@@ -220,11 +220,13 @@ def get_userpage_with_details(member_id):
   current_user=get_current_member_object()
   member=Member.query.filter_by(id=member_id).first()
   games_count=len(member.ownership)
-  return render_template('pages/detaileduser.html', member=member, games_count=games_count,current_user=current_user)
+  return render_template('pages/user_detailed.html', member=member, games_count=games_count,current_user=current_user)
 
 @app.route('/members/me/edit')
 def get_user_edit_form():
   current_user=get_current_member_object()
+  if current_user is None:
+    abort(401)
   form = MemberForm()
   form.description.data=current_user.description
   return render_template('forms/edit_user.html', form=form, member=current_user, current_user=current_user)
@@ -233,6 +235,8 @@ def get_user_edit_form():
 def edit_user():
   try:
     user=get_current_member_object()
+    if user is None:
+      abort(401)
     username=request.form.get('username')
     img_link=request.form.get('img_link')
     description=request.form.get('description')
