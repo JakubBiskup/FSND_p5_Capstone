@@ -129,6 +129,9 @@ def join_event(event_id):
     current_user=get_current_member_object()
     if current_user not in event.players and len(event.players)<event.max_players:
       event.players.append(current_user)
+    else:
+      if len(event.players)>=event.max_players:
+        return jsonify({'success':False,'message':'This event has already reached maximum capacity'}),400 ###############not sure which code should I respond with here
     db.session.commit()
     db.session.close()
     return jsonify({'success':True}), 200
@@ -143,6 +146,8 @@ def leave_event(event_id):
   try:
     event=Event.query.filter_by(id=event_id).one_or_none()
     current_user=get_current_member_object()
+    if current_user is None:
+      abort(401)
     if current_user in event.players:
       event.players.remove(current_user)
     db.session.commit()
