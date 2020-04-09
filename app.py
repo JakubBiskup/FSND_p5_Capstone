@@ -337,11 +337,13 @@ def add_game():
     return redirect(f'/members/{current_user_id}')
 
 @app.route('/members/create')
+@requires_auth()
 def get_user_form():
   form=MemberForm()
   return render_template('forms/new_user.html', form=form)
 
 @app.route('/members/create', methods=["POST"])
+@requires_auth()
 def create_user():
   try:
     username=request.form.get('username')
@@ -485,6 +487,8 @@ def declare_ownership_of_existing_game(game_id):
 def cancel_ownage_of_game(game_id):
   try:
     current_user=get_current_member_object()
+    if current_user is None:
+      abort(401)
     game=Game.query.filter_by(id=game_id).one_or_none()
     games_of_user=current_user.ownership
     if game in games_of_user:
@@ -558,6 +562,8 @@ def search_results_game():
 def delete_game(game_id):
   try:
     game=Game.query.filter_by(id=game_id).one_or_none()
+    if game is None:
+      abort(404)
     db.session.delete(game)
     db.session.commit()
   except Exception as e:
@@ -571,6 +577,8 @@ def delete_game(game_id):
 def delete_event(event_id):
   try:
     event=Event.query.filter_by(id=event_id).one_or_none()
+    if event is None:
+      abort(404)
     host=event.host
     if host is None: #in case of host not existing anymore #########################
       if check_auth(permission='delete:events'):
@@ -603,6 +611,8 @@ def delete_event(event_id):
 def delete_member(member_id):
   try:
     member=Member.query.filter_by(id=member_id).one_or_none()
+    if member is None:
+      abort(404)
     for game in member.ownership: # This will delete games if they are no longer owned by any user 
       if len(game.owners)==1:
         db.session.delete(game)
@@ -617,13 +627,21 @@ def delete_member(member_id):
 
 
 #Error handling
-@app.errorhandler(422)
-def unprocessable(error):
+@app.errorhandler(401)
+def unauthorized(error):
     return jsonify({
         "success": False,
-        "error": 422,
-        "message": "unprocessable"
-    }), 422
+        "error": 401,
+        "message": "unauthorized"
+    }), 401
+
+@app.errorhandler(403)
+def forbidden(error):
+    return jsonify({
+        "success": False,
+        "error": 403,
+        "message": "forbidden"
+    }), 403
 
 
 @app.errorhandler(404)
