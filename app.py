@@ -495,13 +495,9 @@ def cancel_ownage_of_game(game_id):
       games_of_user.remove(game)
       if len(game.owners)==0:
         db.session.delete(game)
-        db.session.commit()
-        db.session.close()
-        return jsonify({'success': True}), 200
-      else:
-        db.session.commit()
-        db.session.close()
-        return jsonify({'success': True}), 200
+      db.session.commit()
+      db.session.close()
+      return jsonify({'success': True}), 200
   except Exception as e:
     db.session.rollback()
     print(e)
