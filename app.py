@@ -11,9 +11,9 @@ def get_current_member_object():
   current_user=Member.query.filter_by(auth0_user_id=get_auth0_user_id_from_cookie_token()).one_or_none()
   return current_user
 #
-def create_app(test_config=None):
+def create_app(test_config=None,database_path=db_path):
   app=Flask(__name__)
-  app.config["SQLALCHEMY_DATABASE_URI"] = db_path
+  app.config["SQLALCHEMY_DATABASE_URI"] = database_path
   SECRET_KEY=os.urandom(32)###
   app.config['SECRET_KEY']=SECRET_KEY
   setup_db(app, db_path)
@@ -61,7 +61,7 @@ def create_app(test_config=None):
   @app.route('/members/all')
   def get_all_members():
     current_user=get_current_member_object()
-    members=Member.query.filter_by(member=True).order_by(Member.username).all() #### change this later to ignore guests(users not granted member status yet)
+    members=Member.query.filter_by(member=True).order_by(Member.username).all()
     members_num=len(members)
     guests=Member.query.filter_by(member=False).order_by(Member.username).all()
     guests_num=len(guests)
@@ -330,6 +330,7 @@ def create_app(test_config=None):
     except Exception as e:
       db.session.rollback()
       print(e)
+      return jsonify({'success': False}), e.status_code
     finally:
       current_user_id=current_user.id
       db.session.close()
@@ -448,7 +449,6 @@ def create_app(test_config=None):
       h1=request.form.get('h1')
       welcoming_text=request.form.get('welcoming_text')
       club_info=Club.query.first()
-      
       if img_link:
         club_info.img_link=img_link
       if h1:
@@ -462,6 +462,7 @@ def create_app(test_config=None):
     except Exception as e:
       db.session.rollback()
       print(e)
+      return jsonify({'success': False}), e.status_code
     finally:
       db.session.close()
     return redirect('/')
@@ -501,7 +502,7 @@ def create_app(test_config=None):
       db.session.rollback()
       print(e)
       db.session.close()
-      return jsonify({'success': False}), 400
+      return jsonify({'success': False}), 401
         
 
   @app.route('/games/<int:game_id>/edit')
@@ -515,16 +516,13 @@ def create_app(test_config=None):
   @app.route('/games/<int:game_id>/edit',methods=["POST"])
   @requires_auth(permission='edit:games')
   def edit_game(game_id):
-    try:
-      game=Game.query.filter_by(id=game_id).one_or_none()
-      game.title=request.form.get('title')
-      game.link=request.form.get('link')
-      db.session.commit()
-    except Exception as e:
-      db.session.rollback()
-      print(e)
-    finally:
-      db.session.close()
+    game=Game.query.filter_by(id=game_id).one_or_none()
+    if game is None:
+      abort(404)
+    game.title=request.form.get('title')
+    game.link=request.form.get('link')
+    db.session.commit()
+    db.session.close()
     return redirect('/games/all')
 
     
@@ -555,18 +553,13 @@ def create_app(test_config=None):
   @app.route('/games/<int:game_id>/delete', methods=["DELETE"])
   @requires_auth('delete:games')
   def delete_game(game_id):
-    try:
-      game=Game.query.filter_by(id=game_id).one_or_none()
-      if game is None:
-        abort(404)
-      db.session.delete(game)
-      db.session.commit()
-    except Exception as e:
-      db.session.rollback()
-      print(e)
-    finally:
-      db.session.close()
-      return redirect('/games/all')
+    game=Game.query.filter_by(id=game_id).one_or_none()
+    if game is None:
+      abort(404)
+    db.session.delete(game)
+    db.session.commit()
+    db.session.close()
+    return redirect('/games/all')
 
   @app.route('/events/<int:event_id>/delete', methods=["DELETE"])
   def delete_event(event_id):
