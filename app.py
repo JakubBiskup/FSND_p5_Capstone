@@ -202,7 +202,9 @@ def create_app(test_config=None,database_path=db_path):
   @app.route('/members/<int:member_id>')
   def get_userpage(member_id):
     current_user=get_current_member_object()
-    member=Member.query.filter_by(id=member_id).first()
+    member=Member.query.filter_by(id=member_id).one_or_none()
+    if member is None:
+      abort(404)
     games_count=len(member.ownership)
     return render_template('pages/user.html', member=member, games_count=games_count, current_user=current_user)
 
@@ -225,71 +227,67 @@ def create_app(test_config=None,database_path=db_path):
 
   @app.route('/members/me/edit', methods=["POST"])
   def edit_user():
-    try:
-      user=get_current_member_object()
-      if user is None:
-        abort(401)
-      username=request.form.get('username')
-      img_link=request.form.get('img_link')
-      description=request.form.get('description')
-      
-      id_for_redirect=user.id
+    user=get_current_member_object()
+    if user is None:
+      abort(401)
+    username=request.form.get('username')
+    img_link=request.form.get('img_link')
+    description=request.form.get('description')
+    
+    id_for_redirect=user.id
 
-      first_name=request.form.get('first_name')
-      last_name=request.form.get('last_name')
-      phone=request.form.get('phone')
-      email=request.form.get('email')
+    first_name=request.form.get('first_name')
+    last_name=request.form.get('last_name')
+    phone=request.form.get('phone')
+    email=request.form.get('email')
 
-      country=request.form.get('country')
-      city=request.form.get('city')
-      street=request.form.get('street')
-      house_num=request.form.get('house_num')
-      appartment_num=request.form.get('appartment_num')
-      if username:
-        user.username=username
-        if user.home_address!=None:
-          user.home_address.name=username+"'s home"
-      if img_link:
-        user.img_link=img_link
-      if description:
-        user.description=description
-      if first_name:
-        user.first_name=first_name
-      if last_name:
-        user.last_name=last_name
-      if phone:
-        user.phone=phone
-      if email:
-        user.email=email
+    country=request.form.get('country')
+    city=request.form.get('city')
+    street=request.form.get('street')
+    house_num=request.form.get('house_num')
+    appartment_num=request.form.get('appartment_num')
+    if username:
+      user.username=username
       if user.home_address!=None:
-        if country:
-          user.home_address.country=country
-        if city:
-          user.home_address.city=city
-        if street:
-          user.home_address.street=street
-        if house_num:
-          user.home_address.house_num=house_num
-        if appartment_num:
-          user.home_address.appartment_num=appartment_num
-      else:
-        if country and city and street and house_num:
-          if username:
-            home_name=username+"'s home"
-          else:
-            home_name=user.username +"'s home"
-          if appartment_num=='':
-            appartment_num=None
-          new_home=Location(name=home_name,country=country,city=city,street=street,house_num=house_num,appartment_num=appartment_num)
-          db.session.add(new_home)
-          user.home_address=new_home
-      db.session.commit()
-    except Exception as e:
-      db.session.rollback()
-      print(e)
-    finally:
-      db.session.close()
-      return redirect(f"/members/{id_for_redirect}")
+        user.home_address.name=username+"'s home"
+    if img_link:
+      user.img_link=img_link
+    if description:
+      user.description=description
+    if first_name:
+      user.first_name=first_name
+    if last_name:
+      user.last_name=last_name
+    if phone:
+      user.phone=phone
+    if email:
+      user.email=email
+    if user.home_address!=None:
+      if country:
+        user.home_address.country=country
+      if city:
+        user.home_address.city=city
+      if street:
+        user.home_address.street=street
+      if house_num:
+        user.home_address.house_num=house_num
+      if appartment_num:
+        user.home_address.appartment_num=appartment_num
+    else:
+      if country and city and street and house_num:
+        if username:
+          home_name=username+"'s home"
+        else:
+          home_name=user.username +"'s home"
+        if appartment_num=='':
+          appartment_num=None
+        new_home=Location(name=home_name,country=country,city=city,street=street,house_num=house_num,appartment_num=appartment_num)
+        db.session.add(new_home)
+        user.home_address=new_home
+    db.session.commit()
+    db.session.close()
+    return redirect(f"/members/{id_for_redirect}")
+    
 
   @app.route('/games/create')
   @requires_auth('add:games')
@@ -365,13 +363,14 @@ def create_app(test_config=None,database_path=db_path):
         new_user.home_address=new_home
       
       db.session.commit()
+      db.session.close()
+      return render_template('pages/user.html', member=Member.query.filter_by(auth0_user_id=auth0_user_id).one_or_none(),current_user=Member.query.filter_by(auth0_user_id=auth0_user_id).one_or_none())
+      
     except Exception as e:
       db.session.rollback()
       print(e)
-    finally:
-      db.session.close()
-      return render_template('pages/user.html', member=Member.query.filter_by(auth0_user_id=auth0_user_id).one_or_none())
-      
+      abort(400)
+
   @app.route('/events/create')
   @requires_auth('create:events')
   def get_event_form():
@@ -595,6 +594,7 @@ def create_app(test_config=None,database_path=db_path):
     except Exception as e:
       db.session.rollback()
       print(e)
+      abort(e.status_code)
     finally:
       db.session.close()
       return redirect('/members/all')
