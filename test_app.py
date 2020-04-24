@@ -8,9 +8,9 @@ from flask import Flask
 #SECRET_KEY=os.urandom(32)
 TEST_DB_NAME='testcp6'
 TEST_DB_PATH="postgres://postgres:123@{}/{}".format('localhost:5432', TEST_DB_NAME)
-ADMIN_JWT="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTZlNDMxNzEwZDZlZTBjOGVkYzY3NWUiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODc0OTg0MzEsImV4cCI6MTU4NzU4NDgzMSwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImFkZDpnYW1lcyIsImNyZWF0ZTpldmVudHMiLCJkZWxldGU6ZXZlbnRzIiwiZGVsZXRlOmdhbWVzIiwiZGVsZXRlOm1lbWJlcnMiLCJlZGl0OmNsdWIiLCJlZGl0OmdhbWVzIiwiam9pbjpldmVudHMiLCJyZWFkOm1lbWJlci1kZXRhaWxzIl19.mfke3opO5vah3e88AN0gC1x-5vZJzWx3CFH8574otsDJ4g4Rl0TN8p2XJi4kYIxC7LgjmcI_cWoELsVF8JlrQsUd4_ida7WYzvcJAEBDvw5M7t5f13mh6OwURtu9mZaCHPclUDrat1Zl2p7iuUWm1BXT7MM2qx1LQSfPfe4luJWFm3iqWV3IuHcUr5PNpua5Y-wHRmsrZ0V2ih6C4ixYLzf4Tio3P8TEDdQftoqeZaXCdAysZUy08lphJ4KSbHB7WCdi6d3-v48iyqfO68Sp_zx6CX3E4t8_Dezc39vR8hUMcBzM-O6JTrEgXX52bd1AWy_bVbv0b0KwC_T9DzOucg"	
-MEMBER_JWT="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTI5Y2UxNWI4YzQ0NzBmMDc5MTc5MGIiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODc0OTgwNDQsImV4cCI6MTU4NzUwNTI0NCwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImFkZDpnYW1lcyIsImNyZWF0ZTpldmVudHMiLCJqb2luOmV2ZW50cyIsInJlYWQ6bWVtYmVyLWRldGFpbHMiXX0.vKU9WFIu_wPD-fPFyAM0uVLl8aDtaYTniB4YUXO5pmNiGVLtP73qOCh4XFFQ095cy-GN-JkgDE-NaF5XhMDFx9hyONg4VSFhk1AhyfiP6HK-xgNbop3gZVb9o858WQaGTNQAp_fKm_b-NTkIxMoaZnPGjl-ggfZ-jkaefhpHQGaVos9PomFeqiCwHe2ufPj9kuq6YK-Z_a0FZ7HVK5WqNqnGJ-QOseFcLVPLjOMSGwdXk4MjuUikzCElDR78xfSFZojM45BgoaefLEELSFCvDgoJi_d9X6COcQj8ut94d0KKR_dRGCdcSEHyZwfmasgQVXPH_f_t0f3fK9rh-O-SWA"	
-GUEST_JWT="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTYzY2RjMzMyMGMxMjBkNDNlNjM5OTAiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODc0OTg2MDQsImV4cCI6MTU4NzU4NTAwNCwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbXX0.k-TCAaXxN1scyFsHtv9Jj5BmgcYiutpOAITPLdqtZddJWzQ4elx6O6wPz6Fv7fnAzeGJMz_mvQjQbfZrSdEAgFMvvowFhqz8bIhLU33XEqB95V08iM-qTEtj46ziE-Kv6uO0jvx_y8_PnMQszAoRP3gHdLmAlAIVzY9bTVUu9zcXD8oJkbHR1yffii2t6G_0s9Df8M1U3pHuTVsxjg1hYunEzNqW61pm18P2AXI7AIBuDP-QxAyQpIT-QFWJE7lF54fKzYCt1GTlAacS7mIfSIOfbw6Y5LubGIHcvtYMedz9a0MjAxEnyuFXZGMNVBr4yU6lr8eWS6nogJWdep8x4w"
+ADMIN_JWT="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTZlNDMxNzEwZDZlZTBjOGVkYzY3NWUiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODc3MjQ3NzMsImV4cCI6MTU4NzgxMTE3MywiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImFkZDpnYW1lcyIsImNyZWF0ZTpldmVudHMiLCJkZWxldGU6ZXZlbnRzIiwiZGVsZXRlOmdhbWVzIiwiZGVsZXRlOm1lbWJlcnMiLCJlZGl0OmNsdWIiLCJlZGl0OmdhbWVzIiwiam9pbjpldmVudHMiLCJyZWFkOm1lbWJlci1kZXRhaWxzIl19.tj_HrZBkhrrNSeeQes05Eyzd7tdrLFWEMRpDcH7wHcbh8N4J5CwV8QiiMgjshcQtDN6JaK724E2WRlwdvDBaWAqS30ZaqBLdobOjrv5UdxVpQl5fhAYywWCOTN77WOtS6wYDxTIz35R_zpnFnOY_rqC6xs8PX227aVBpYJlZh_T6XWe1NhfwUeOww3wwjvFRM884p8Cvyl-07BCOxCQLz7mkfvKwkWyraDXZvy8R4qIVMuGgakmX5q9Zv9XW850wqdnL1_yUHGKZGbuCN9-qy1h61NRfUbjsybMxkuxvyZf2gblCu45AYWPU8LXXN32a8Ij5WqBcyjgvf25Zs6i3VQ"	
+MEMBER_JWT="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTI5Y2UxNWI4YzQ0NzBmMDc5MTc5MGIiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODc3MjQ3MjQsImV4cCI6MTU4NzgxMTEyNCwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImFkZDpnYW1lcyIsImNyZWF0ZTpldmVudHMiLCJqb2luOmV2ZW50cyIsInJlYWQ6bWVtYmVyLWRldGFpbHMiXX0.bWP4lE_8Us-y00EIv3TjdQIthb6_n3gqGfbvgMdl5gqewCaIXRR5IebyotUpVDviaAM7K2YcgFL-uO1HbW51UEl9vXSVdVNmGNsHQXrqKAg6D5lLedDO79jf4eXY3wjXHS1gBhcHN1Quj3S4E6tvePeJRZUYEtxM0c5fZywe27bGC-ELnK4yslMWyRg8wupzGLat1xKR9apQ5NaJMqUsREaAWTyomUytsEnKonDBTRIjJTj5xJNBVUTKPd9Nyn-ilGj4k4HcGOd5h-B71zeli14o9_-yL83ZBAMqAERcQrbZ51HarTGMvnsn7m5aKpoMZH0HQ_XNR1AP5-puaaPKOQ"	
+GUEST_JWT="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTYzY2RjMzMyMGMxMjBkNDNlNjM5OTAiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODc3MjQ2NTgsImV4cCI6MTU4NzgxMTA1OCwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbXX0.u8ESrFVB49MWokTyrOp-SuXxfHnmHQ_PF_TO2CADCA2SRSj97ZbUFAopEqQdbQGQBggRWhkjCUCEIkomBExMRzxjWVzG-KnOwBI3C5F9JHXgxyyA4odi_T8Hb4vL6Ho94OZdT0hETM-i_S1xN_PpL_oxU_DagPCBKuu-Y1vzXwoPAVPwXRngb0y3jOBMaA_8q5RJ80Wos_GlLXWzjoVTsVVrx23jWPQKTcVZKKcIMqphC4LatEoXZ3OYowG2Vn1nLfJrjGHadVM2h7VroTpD3qD_oACiza3rg8-nU2MGVLNEN_d7TCK1QHE5R-ecpe4Z6wDliIAv1a7sv0fr0J_j8A"
 DOMAIN='localhost'
 
 
@@ -81,7 +81,7 @@ class GameTestCase(unittest.TestCase):
     
     def test_create_game(self):
         self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
-        res=self.client.post('/games/create',data={'game':0,'title':'Chess','link':'https://lichess.org','submit':'Save'})
+        res=self.client.post('/games/create',data={'game':0,'title':'test game, delete this','link':'https://lichess.org','submit':'Save'})
         self.assertEqual(res.status_code,302)
     
     def test_create_game_without_auth(self):
@@ -133,14 +133,118 @@ class GameTestCase(unittest.TestCase):
         self.assertEqual(res.status_code,200)
 
     def test_delete_game(self):
+        game_to_delete_id=Game.query.order_by(Game.id.desc()).first().id
         self.client.set_cookie(DOMAIN, 'token', ADMIN_JWT)
-        res=self.client.delete('/games/28/delete')################################what id should I put here?
+        res=self.client.delete('/games/'+str(game_to_delete_id)+'/delete')
         self.assertEqual(res.status_code,302)
     
     def test_delete_nonexistent_game(self):
         self.client.set_cookie(DOMAIN, 'token', ADMIN_JWT)
         res=self.client.delete('/games/345/delete')
         self.assertEqual(res.status_code,404)
+
+class EventTestCase(unittest.TestCase):
+    
+    def setUp(self):
+        
+        self.app=create_app(database_path=TEST_DB_PATH)
+        self.client=self.app.test_client()
+        setup_db(self.app,TEST_DB_PATH)
+        
+
+    def tearDown(self):
+        pass
+
+    def test_get_all_events_page(self):
+        res=self.client.get('/events/all')
+        self.assertEqual(res.status_code,200)
+
+    def test_get_create_event_form(self):
+        self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
+        res=self.client.get('/events/create')
+        self.assertEqual(res.status_code,200)
+    
+    def test_get_create_event_form_without_permission(self):
+        self.client.set_cookie(DOMAIN, 'token', GUEST_JWT)
+        res=self.client.get('/events/create')
+        self.assertEqual(res.status_code,403)
+    
+    def test_create_event(self):
+        self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
+        res=self.client.post('/events/create', data={'name':'test name','description':'test description','time':'2020-12-20 17:45','games':4,'max_players':4,'location':3,'submit':'Create event'})
+        self.assertEqual(res.status_code,302)
+
+    def test_create_event_without_auth(self):
+        res=self.client.post('/events/create', data={'name':'test2','description':'test description','time':'2020-12-20 17:45','games':4,'max_players':4,'location':3,'submit':'Create event'})
+        self.assertEqual(res.status_code,401)
+    
+    def test_view_one_event(self):
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.get('/events/'+str(newest_event.id))
+        self.assertEqual(res.status_code,200)
+
+    def test_get_edit_event_form(self):
+        self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.get('/events/'+str(newest_event.id)+'/edit')
+        self.assertEqual(res.status_code,200)
+
+    def test_get_edit_event_form_of_event_hosted_by_another_member(self):
+        self.client.set_cookie(DOMAIN, 'token', ADMIN_JWT)
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.get('/events/'+str(newest_event.id)+'/edit')
+        self.assertEqual(res.status_code,403)
+    
+    def test_edit_event(self):
+        self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.post('/events/'+str(newest_event.id)+'/edit',data={'name':'edited name test ','description':'edited test description','time':'2020-12-20 17:45','games':27,'max_players':2,'location':7,'submit':'Edit event'})
+        self.assertEqual(res.status_code,302)
+    
+    def test_edit_event_without_auth(self):
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.post('/events/'+str(newest_event.id)+'/edit',data={'name':'edited name test ','description':'edited test description','time':'2020-12-20 17:45','games':27,'max_players':2,'location':7,'submit':'Edit event'})
+        self.assertEqual(res.status_code,401)
+
+    def test_join_event(self):
+        self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.patch('/events/'+str(newest_event.id)+'/join')
+        self.assertEqual(res.status_code,200)
+
+    def test_join_event_without_permission(self):
+        self.client.set_cookie(DOMAIN, 'token', GUEST_JWT)
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.patch('/events/'+str(newest_event.id)+'/join')
+        self.assertEqual(res.status_code,403)
+    
+    def test_withdraw(self):
+        self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.patch('/events/'+str(newest_event.id)+'/unjoin')
+        self.assertEqual(res.status_code,200)
+
+    def test_withdraw_when_not_logged_in(self):
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.patch('/events/'+str(newest_event.id)+'/unjoin')
+        self.assertEqual(res.status_code,401)
+    
+    def test_search_event(self):
+        res=self.client.post('/events/search',data={'search_term':'a'})
+        self.assertEqual(res.status_code,200)
+
+    def test_delete_event(self):
+        self.client.set_cookie(DOMAIN, 'token', ADMIN_JWT)
+        newest_event=Event.query.order_by(Event.id.desc()).first()
+        res=self.client.delete('/events/'+str(newest_event.id)+'/delete')
+        self.assertEqual(res.status_code,200)
+    
+    def test_delete_nonexistent_event(self):
+        self.client.set_cookie(DOMAIN, 'token', ADMIN_JWT)
+        res=self.client.delete('/events/'+'975'+'/delete')
+        self.assertEqual(res.status_code,404)
+    
+    
 
 
 

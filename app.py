@@ -142,22 +142,15 @@ def create_app(test_config=None,database_path=db_path):
 
   @app.route('/events/<int:event_id>/unjoin', methods=['PATCH'])
   def leave_event(event_id):
-    try:
-      event=Event.query.filter_by(id=event_id).one_or_none()
-      current_user=get_current_member_object()
-      if current_user is None:
-        abort(401)
-      if current_user in event.players:
-        event.players.remove(current_user)
-      db.session.commit()
-      db.session.close()
-      return jsonify({'success':True}), 200
-    except Exception as e:
-      db.session.rollback()
-      print(e)
-      db.session.close()
-      return jsonify({'success':False}),500 ###########################
-
+    event=Event.query.filter_by(id=event_id).one_or_none()
+    current_user=get_current_member_object()
+    if current_user is None:
+      abort(401)
+    if current_user in event.players:
+      event.players.remove(current_user)
+    db.session.commit()
+    db.session.close()
+    return jsonify({'success':True}), 200
 
 
 
@@ -563,35 +556,28 @@ def create_app(test_config=None,database_path=db_path):
 
   @app.route('/events/<int:event_id>/delete', methods=["DELETE"])
   def delete_event(event_id):
-    try:
-      event=Event.query.filter_by(id=event_id).one_or_none()
-      if event is None:
-        abort(404)
-      host=event.host
-      if host is None: #in case of host not existing anymore #########################
-        if check_auth(permission='delete:events'):
-          db.session.delete(event)
-          db.session.commit()
-          return jsonify({'success': True}), 200
-        else:
-          abort(403)
-      if get_current_member_object()==host:
+    event=Event.query.filter_by(id=event_id).one_or_none()
+    if event is None:
+      abort(404)
+    host=event.host
+    if host is None: #in case of host not existing anymore #########################
+      if check_auth(permission='delete:events'):
         db.session.delete(event)
         db.session.commit()
         return jsonify({'success': True}), 200
       else:
-        if check_auth(permission='delete:events'):
-          db.session.delete(event)
-          db.session.commit()
-          return jsonify({'success': True}), 200
-        else:
-          abort(403)
-
-    except Exception as e:
-      db.session.rollback()
-      print(e)
-      db.session.close()
-      return jsonify({'success': False}),500
+        abort(403)
+    if get_current_member_object()==host:
+      db.session.delete(event)
+      db.session.commit()
+      return jsonify({'success': True}), 200
+    else:
+      if check_auth(permission='delete:events'):
+        db.session.delete(event)
+        db.session.commit()
+        return jsonify({'success': True}), 200
+      else:
+        abort(403)
       
 
   @app.route('/members/<int:member_id>/delete', methods=["DELETE"])
