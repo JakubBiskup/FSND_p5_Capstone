@@ -14,6 +14,25 @@ GUEST_JWT="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ0
 GUEST_WITHOUT_MEMBER_OBJECT_JWT="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZWEzMmRmZWQyYzA4NzBiZTYxMmJlN2MiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODc3NTI0NDksImV4cCI6MTU4NzgzODg0OSwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbXX0.pVrSTOiOzHo92HBVjiFVKPuWnGlkXn3v2lvCVHaJPpijf0WHf4j9jXFf6kAVGNaTHot7iazhrjnqMfN7ldOhWct67nG5m5mifzPILU0JNHktnvW_zg3Iatr1zfnScLMcM1bM3f1KkwxoAwD0g7NQTfqUso8yYW8xibb_HffMB43ViOJ2rcaU_eyAgSaPx-oTQGxUvy4kb9U2ZjNyzspl5lARRLYN6UQ0aWrJOxICcJaBUvGK3-mpmrdMsEt4JD4RswmCmpcosemA_sa8ubWvYROHe4u3vE2FavUppbPJ3BIVXBdr7hM6wGzAPrj63AKLtjlI0KPnbEnN7JmfVFc4Cw"
 DOMAIN='localhost'
 
+class LoginTestCase(unittest.TestCase):
+ 
+    def setUp(self):
+        
+        self.app=create_app(database_path=TEST_DB_PATH)
+        self.client=self.app.test_client()
+        setup_db(self.app,TEST_DB_PATH)
+        
+
+    def tearDown(self):
+        pass
+
+    def test_get_login_page(self):
+        res=self.client.get('/login')
+        self.assertEqual(res.status_code,200)
+
+    def test_save_cookie_on_login(self):
+        res=self.client.post('/login',data={'after_hash':'access_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTYzY2RjMzMyMGMxMjBkNDNlNjM5OTAiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODgwMDExODEsImV4cCI6MTU4ODA4NzU4MSwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbXX0.PSlgiDlue84cBw3_ok_5W5DwEODWf4heJDg9lDhtztj5729LQ77NiDB3hgVJEyg9hc-aNxNFy3jTSVSa3INpl9g0qGdG6NWF8fCiJahOzvURmv-LVjDuEyx9IqN_vqY9tcPJvBQKlNySrGZvXM1MktuNLo9781iHZ1OgkE0LIRpXxyqpON7dBUbEN_Xzd4xlAWGnUZlJ6v2Q7qJH_fp_soO-k82Rqx2L_2VFg9UoIK3nSGP0fUUbH8-UY7qFe8Etb7HxCbz4zlDVG9ZMy0KnR0FHHjY3XO3TPTdQJGNgoB3hrIe_jfuKALsChgEpgUsiM9kr0x24dO3JTUKt55igBw&expires_in=86400&token_type=Bearer'})
+        self.assertEqual(res.status_code,302)
 
 
 class ClubTestCase(unittest.TestCase):
