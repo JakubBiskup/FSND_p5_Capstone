@@ -10,7 +10,6 @@ ALGORITHMS = ['RS256']
 API_AUDIENCE = 'BishopGaming'
 
 
-
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
@@ -35,7 +34,6 @@ def get_token_from_cookie():
                         401)
     token = parts[1]
     return token
-
 
 
 def verify_decode_jwt(token):
@@ -101,6 +99,7 @@ def check_permissions(permission, payload):
                         403)
     return True
 
+
 def requires_auth(permission=None):
     def requires_auth_decorator(f):
         @wraps(f)
@@ -114,17 +113,19 @@ def requires_auth(permission=None):
         return wrapper
     return requires_auth_decorator
 
+
 def get_auth0_user_id_from_cookie_token():
     try:
-        token=get_token_from_cookie()
-        payload=verify_decode_jwt(token)
-        sub=payload['sub']
-    except:
+        token = get_token_from_cookie()
+        payload = verify_decode_jwt(token)
+        sub = payload['sub']
+    except BaseException:
         return None
     return sub
 
+
 def check_auth(permission):
-    token=get_token_from_cookie()
-    payload=verify_decode_jwt(token)
+    token = get_token_from_cookie()
+    payload = verify_decode_jwt(token)
     check_permissions(permission, payload)
     return True
