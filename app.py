@@ -14,7 +14,7 @@ def get_current_member_object():
 def create_app(test_config=None,database_path=db_path):
   app=Flask(__name__)
   app.config["SQLALCHEMY_DATABASE_URI"] = database_path
-  SECRET_KEY=os.urandom(32)###
+  SECRET_KEY=os.urandom(32)
   app.config['SECRET_KEY']=SECRET_KEY
   setup_db(app, db_path)
   ##
@@ -55,7 +55,7 @@ def create_app(test_config=None,database_path=db_path):
   def get_all_games():
     current_user=get_current_member_object()
     games=Game.query.order_by(Game.title).all()
-    games_num=len(games) #### would games.count() be better?
+    games_num=len(games)
     return render_template('pages/allgames.html', games=games,games_num=games_num,current_user=current_user)
 
   @app.route('/members/all')
@@ -136,7 +136,6 @@ def create_app(test_config=None,database_path=db_path):
       return jsonify({'success':True}), 200
     except Exception as e:
       db.session.rollback()
-      print(e)
       db.session.close()
       return jsonify({'success':False}),500 ########################### change status code
 
@@ -194,7 +193,6 @@ def create_app(test_config=None,database_path=db_path):
       db.session.commit()
     except Exception as e:
       db.session.rollback()
-      print(e)
     finally:
       db.session.close()
       return redirect(f"/events/{event_id}")
@@ -320,7 +318,6 @@ def create_app(test_config=None,database_path=db_path):
         db.session.commit()
     except Exception as e:
       db.session.rollback()
-      print(e)
       return jsonify({'success': False}), e.status_code
     finally:
       current_user_id=current_user.id
@@ -368,7 +365,6 @@ def create_app(test_config=None,database_path=db_path):
       
     except Exception as e:
       db.session.rollback()
-      print(e)
       abort(400)
 
   @app.route('/events/create')
@@ -417,7 +413,6 @@ def create_app(test_config=None,database_path=db_path):
       db.session.commit()
     except Exception as e:
       db.session.rollback()
-      print(e)
     finally:
       db.session.close()
       return redirect('/events/all')
@@ -453,13 +448,12 @@ def create_app(test_config=None,database_path=db_path):
       db.session.commit()
     except Exception as e:
       db.session.rollback()
-      print(e)
       return jsonify({'success': False}), e.status_code
     finally:
       db.session.close()
     return redirect('/')
 
-  @app.route('/games/<int:game_id>/own', methods=['PATCH'])########################do I need this endpoint?
+  @app.route('/games/<int:game_id>/own', methods=['PATCH'])
   @requires_auth('add:games')
   def declare_ownership_of_existing_game(game_id):
     try:
@@ -470,12 +464,11 @@ def create_app(test_config=None,database_path=db_path):
         db.session.commit()
     except Exception as e:
       db.session.rollback()
-      print(e)
     finally:
       db.session.close()
     return redirect('/games/all')
 
-  @app.route('/games/<int:game_id>/unown', methods=['DELETE'])###################no need for auth (?), should this be delete or patch?
+  @app.route('/games/<int:game_id>/unown', methods=['DELETE'])
   def cancel_ownage_of_game(game_id):
     try:
       current_user=get_current_member_object()
@@ -492,7 +485,6 @@ def create_app(test_config=None,database_path=db_path):
         return jsonify({'success': True}), 200
     except Exception as e:
       db.session.rollback()
-      print(e)
       db.session.close()
       return jsonify({'success': False}), 401
         
@@ -559,7 +551,7 @@ def create_app(test_config=None,database_path=db_path):
     if event is None:
       abort(404)
     host=event.host
-    if host is None: #in case of host not existing anymore #########################
+    if host is None: #in case of host not existing anymore
       if check_auth(permission='delete:events'):
         db.session.delete(event)
         db.session.commit()
@@ -593,7 +585,6 @@ def create_app(test_config=None,database_path=db_path):
       db.session.commit()
     except Exception as e:
       db.session.rollback()
-      print(e)
       abort(e.status_code)
     finally:
       db.session.close()
