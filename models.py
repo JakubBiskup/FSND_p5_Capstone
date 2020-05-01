@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 
-db_name = 'testcp6'
+db_name = 'bishopgamingdb'
 db_path = "postgres://postgres:123@{}/{}".format('localhost:5432', db_name)
 
 db = SQLAlchemy()
