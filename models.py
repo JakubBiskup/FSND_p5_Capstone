@@ -1,8 +1,9 @@
+import os
 from flask_sqlalchemy import SQLAlchemy
 
-db_name = 'bishopgamingdb'
-db_path = "postgres://postgres:123@{}/{}".format('localhost:5432', db_name)
-
+# db_name = 'bishopgamingdb'
+# db_path = "postgres://postgres:123@{}/{}".format('localhost:5432', db_name)
+db_path = os.environ['DATABASE_URL']
 db = SQLAlchemy()
 
 
