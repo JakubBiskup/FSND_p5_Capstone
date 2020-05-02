@@ -37,9 +37,12 @@ def create_app(test_config=None, database_path=db_path):
     app.config['SECRET_KEY'] = SECRET_KEY
     setup_db(app, db_path)
     ##
-    CLUB_NAME = Club.query.first().name
+    # CLUB_NAME = Club.query.first().name
+    # #################################################################
+    CLUB_NAME = 'Bishop Gaming'
     ##
     app.jinja_env.globals['CLUB_NAME'] = CLUB_NAME
+
 
     @app.route('/login')
     def get_continue_button():
