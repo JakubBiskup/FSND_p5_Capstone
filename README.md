@@ -74,7 +74,7 @@ Bishop Gaming is a flask app designed for a single board game club (club as a gr
 ## API Reference
 
 ### Base URL
-< TODO: base URL here>
+This app is currently hosted at http://bishopgaming.herokuapp.com/
 ### Error Handling
 Errors are returned as JSON objects with "success" set to False, "error" set to the error's number and a "message" describing the error
 
