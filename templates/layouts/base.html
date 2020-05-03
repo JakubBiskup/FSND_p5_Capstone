@@ -50,7 +50,7 @@
             <a href="/members/all">Members</a>
             <a href="/events/all">Events</a>
             <a href="/">Home</a>
-            {% if not current_user %}<button class="topright button" onclick="window.location.href = 'https://fsndtest.eu.auth0.com/authorize?audience=BishopGaming&response_type=token&client_id=F1xicuNZ8EP29PlFR1rzgIhDchQ2ItXO&redirect_uri=http://http://bishopgaming.herokuapp.com/login';">Log In</button>{% endif %}
+            {% if not current_user %}<button class="topright button" onclick="window.location.href = 'https://fsndtest.eu.auth0.com/authorize?audience=BishopGaming&response_type=token&client_id=F1xicuNZ8EP29PlFR1rzgIhDchQ2ItXO&redirect_uri=http://bishopgaming.herokuapp.com/login';">Log In</button>{% endif %}
             {% if current_user %}<a href="/members/{{current_user.id}}" class="topright">{{current_user.username}}</a> 
             <button id="logout"class="topright button">Log Out</button>{% endif %}
         </div>
