@@ -2,8 +2,7 @@
 Bishop Gaming is a flask app designed for a single board game club (club as a group of people). It can be used to set up and schedule board game meetings of club members and keep track of game collection of the whole club and each of its members. This project is also the Capstone Project for Full-Stack Nanodegree at Udacity.
 
 ## Database structure
-< TODO: quickDBD pic here>
-
+![https://app.quickdatabasediagrams.com/#/d/XO5g4p](/static/img/QuickDBD.png)
 ## Role Based Access Control
 
 ##### User that is NOT logged in through Auth0 is allowed to:
