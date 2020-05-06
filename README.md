@@ -125,7 +125,13 @@ pip install -r requirements.txt
 
 ### Database Setup
 
-<TODO: text here>
+There is a file named "bgstartntestdb.bak" in project directory. It contains an example database.
+Restore the database from that file 
+```bash
+psql bgstartntestdb < bgstartntestdb.bak
+```
+
+If you want to run the app locally, you will have to comment out line 5 and uncomment line 8 in models.py, providing path to your local database
 
 ### Running the server
 
@@ -134,6 +140,13 @@ To run the server, execute these three lines from within the project directory:
 export FLASK_ENV=development
 export FLASK_APP=app
 flask run
+```
+
+### Running the tests
+To run the tests you will also need to change TEST_DB_PATH (line 9 and 10) to match the path to your database. Note that running the tests will affect your database.
+To run the tests, execute this line from the project directory:
+```bash
+python test_app.py
 ```
 
 ### Hosting instructions

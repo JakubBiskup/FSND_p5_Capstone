@@ -5,13 +5,13 @@ from models import Game, Event, Member, setup_db
 from app import create_app
 from flask import Flask
 
-TEST_DB_NAME = 'testcp5'
+TEST_DB_NAME = 'bgstartntestdb'
 TEST_DB_PATH = "postgres://postgres:123@{}/{}".format(
     'localhost:5432', TEST_DB_NAME)
-ADMIN_JWT = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTZlNDMxNzEwZDZlZTBjOGVkYzY3NWUiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODgxNzExMTcsImV4cCI6MTU4ODI1NzUxNywiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImFkZDpnYW1lcyIsImNyZWF0ZTpldmVudHMiLCJkZWxldGU6ZXZlbnRzIiwiZGVsZXRlOmdhbWVzIiwiZGVsZXRlOm1lbWJlcnMiLCJlZGl0OmNsdWIiLCJlZGl0OmdhbWVzIiwiam9pbjpldmVudHMiLCJyZWFkOm1lbWJlci1kZXRhaWxzIl19.hPMFwtUIi1BgQrzUiATBRzMidP3MaNWWW_3zXKyIkqwJD2_f1wkYQMPKE2FZeAx05Vri6U_Rd_wEygE_dyvPcDOsaKSynCrCACT58sKTEobSOCSqu6Sp7zNHf2IftXtsf4jjDycUcsNXn6IHMPMoZXB09VfrxmHe1KqtD6UcyS62X6D6Yqdrkc-fwv3Rd7yN3_6A_AQnEkh0fwBMjKPLmYf_g5Olcx09mxXJLzwZPYz9lWqklcsnabdf6RkohhRABpzLPru7KjiRn8uf2_wsGP7AGxtM2y5_r91BvUQA20FQpr0E6WYIhhBDlhg0HIPSCKKCwCNffHgWXxDNgVs6zA"
-MEMBER_JWT = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTI5Y2UxNWI4YzQ0NzBmMDc5MTc5MGIiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODgxNzEwMzgsImV4cCI6MTU4ODI1NzQzOCwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImFkZDpnYW1lcyIsImNyZWF0ZTpldmVudHMiLCJqb2luOmV2ZW50cyIsInJlYWQ6bWVtYmVyLWRldGFpbHMiXX0.Lz6q1uOPtkc5U_2k_RGMKK3piMJ4JDRehI82d5wnG8R4eYPmIVvbiZzHzAe_zoDn5LFQwTntCuov1q0QfA7YsLqIjJgt9MzOpawBVWntJYbI11-Ei23zuRW334wLwLs23z9mGhqBO4-HaARVIyIt3bRsUFRKJ2UL8xoJECEbI_K-I074hl-z3xFTyR1jDdEA-Ku5A4c7ZGjliwhOhA2eVerbDtv_ZucZpGYRdUrGGccWkKvXAg8Dj00eW7xtSJO9bf5qUa5AqXKDv5BOPFKqqhv9JbmcSCe4DqI1LDEZXeA7ReshHBmLUmGPe8yMTlZn8Qvo-8noWob55NJwQKAGZA"
-GUEST_JWT = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTYzY2RjMzMyMGMxMjBkNDNlNjM5OTAiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODgxNzA4NDYsImV4cCI6MTU4ODI1NzI0NiwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbXX0.RL1mzRfRT6VNyVTW8XrRikJMCqHXrsIgB6ZenpvYgmzBqkuszAHGNXK8HnChu_mQECDdxW92hN3u3AB3XTQQgVpi1bc9QjByx6nAmFLTgFIX05ICNdRHU3vzJJ_acQQZBLt0XQwXEAc57wGGSh2Ss6qRCqEY7E0cW74EUnD_VZEV6XUaAJSngBnpnBe0SpyZ1SdCk2OkWuB4Ry2g5fyYCkcJfDwwF3pObo8kz0_ZMduTwmdIhqV9Rn6-w8N2q67mNfcdSpNAwawmBRdc3CWQKLbGmcYVXdYpucUhIsYleVbde6qYk7PEn9WdvLSHQ9E_QSDssgxXr-CZxQP3cQpgGg"
-GUEST_WITHOUT_MEMBER_OBJECT_JWT = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZWE5OTI0NjY0ODliMTBjMTZhZjlmYjkiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODgxNzEzMzksImV4cCI6MTU4ODI1NzczOSwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbXX0.0wp0HXHuaY15LL8SWWTgjDoIojzgNfvoBPtU7U_LsRnQNs16AmZiF7x8qCSWnFvVY1qEnKz3gdz2e4xN6n3T_e3F_gD_BB_7ZMHAGRqicQp06OtSrW0Cv7WO0d_dBwrY2cytVwT-aPkO4F5b0O4-hWGgRjkJQCHiAVVi4EP9sltp7IM0qR10R3aGlNk3i3ewGUtPuOcStstdTRD_mSkxXPCyyYLM7GjEIM9v5Ef7j_s4yOdNvnfcaAEvuGgPL3YZgYzqlChtPGNxGe375TrWPGoL-OTzf1wnJw0P7vE0nFr-4Bxf_r-LnuzB3OO6z5hLpGJ3elyBUjVH8ZWAcY450Q"
+ADMIN_JWT = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTZlNDMxNzEwZDZlZTBjOGVkYzY3NWUiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODg3OTg1NjQsImV4cCI6MTU4ODg4NDk2NCwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImFkZDpnYW1lcyIsImNyZWF0ZTpldmVudHMiLCJkZWxldGU6ZXZlbnRzIiwiZGVsZXRlOmdhbWVzIiwiZGVsZXRlOm1lbWJlcnMiLCJlZGl0OmNsdWIiLCJlZGl0OmdhbWVzIiwiam9pbjpldmVudHMiLCJyZWFkOm1lbWJlci1kZXRhaWxzIl19.hGQl5mNR0mnCRgGAsIO66XXtpO1h9MUDtj0Q2kLSbCoDqMRN_NfS-PGzz7YhqgDwsXnviXOotj-87WM6wdM2m-JqBStfxlHFXeK1UiKLGGearkczltJKNWwftcVnL0FIpVK32i1EJrwnhN4ef_t25CRG1CfWZ9sD83j1FqoZ0_0t5SFvtNlLxiXiJKUVcNgSe9Z2ewg_yivnsebJ8IBSZsizvH6-sj7r6yJ31XeE69swf8dh6m1n491a64g0bPI6earC03FJe80lbj3b1DioodPV29oa5HdZd1IP1iEtAWjp-4aZhN1yoekF_tGWu5Nsw9huh_PrpzDfQqcxQyBLBg"
+MEMBER_JWT = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTI5Y2UxNWI4YzQ0NzBmMDc5MTc5MGIiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODg3OTg5MDEsImV4cCI6MTU4ODg4NTMwMSwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImFkZDpnYW1lcyIsImNyZWF0ZTpldmVudHMiLCJqb2luOmV2ZW50cyIsInJlYWQ6bWVtYmVyLWRldGFpbHMiXX0.U56ekIfl510ccAJSZ__he6jwi5ir2pkKHClulis8lVOjgy6RJdog__FgwMua6tR_OHfFiTSeolFy4G9fuahVwLjufv8mm_goaQmIPfmkZ9-ODrrGpzItRqHi94aQOp84tPgow1ZylKkysf6Va0zkLvNistCCfOskJoSdDVMBl5PoL8EbfOYhU8BiHu4bZ3JrcyYXTIVJ_MtbyRuG5Tk8RkarhmQIWdjy7jqB1xKRS70xS4J-2qKc3YSoPhPUNGoUx9_3DS7f5czOeOfllXBaOkH8U-IFYvb-glj__u25JVL1SSG8iicKOiaiWetP2btH3wYu7Mk6GoreTVDNykdWxA"
+GUEST_JWT = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTYzY2RjMzMyMGMxMjBkNDNlNjM5OTAiLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODg3OTg5OTMsImV4cCI6MTU4ODg4NTM5MywiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbXX0.P8L9D8Qb83OmR8wAQ1VNDWBUmq8NGvPswLrgnTsbKDzTntem5wcek9ASgojCVxM8erzhPZnyCc2WdNBfi7ogZM6MXJsheL7Xr8MWRz9g5Xj9Kp_TIqN-F0hdAOakI8TofrDumreMXrDo_8GNbbzMel2a8bdOCGfSKQJAozXLld9lYRfFsQYeZUHw2IiAEnBpa4j1VcPky5hZ12DJ_XO5Zoco3YgPOVRrockVoi67Lp-FfA0XYfsl8EsBHd0Bva4W56XCmNsxZ5jGsqHv90wj9h_rVZbwyFHgVvVGHsfsFEYMPPzoRjwYZeAeLf67phnZEL2nsc-FJM-E_nAemHoCmQ"
+GUEST_WITHOUT_MEMBER_OBJECT_JWT = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5FSkdNVUZETmtSQ09EYzFPVGM0T0VWR01VWXlSRVUzT0RCRU1FVTFNRGhGUVROQ00wUXdNUSJ9.eyJpc3MiOiJodHRwczovL2ZzbmR0ZXN0LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZTg3M2YzYzZkZTFiMDBjNjY3ZTFkOTciLCJhdWQiOiJCaXNob3BHYW1pbmciLCJpYXQiOjE1ODg3OTkwOTUsImV4cCI6MTU4ODg4NTQ5NSwiYXpwIjoiRjF4aWN1Tlo4RVAyOVBsRlIxcnpnSWhEY2hRMkl0WE8iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImFkZDpnYW1lcyIsImNyZWF0ZTpldmVudHMiLCJqb2luOmV2ZW50cyIsInJlYWQ6bWVtYmVyLWRldGFpbHMiXX0.QrBiBjBD-2lfRfjEjqCV_3ENk4X98--kwSV4Awv-Wascq66XqRFdmrbgUVKfvI9YM4WJk7N69dMX_6-IXVDx3jkeWwb79aJg48AR9XviaMaqQT0tZRao4oPEChQo8pYq73j_LEaJyy6gr4Q8Uvjy_WuQ1cLX-Eal2H3grSJ2UVKCLIGjeMcUxb1mPPqYnTWG5ahLFY0iPaLPGPqb8o-Q4pvo0QdoO91IwXVNEdVFlPscHUNXHAZMkkqgjpS-V746ehEyEo2nHykRTjywd_P3YxutixcElrGFENl5DHDykpdGGNkOMXMmBVyJIpSjgJVMhMft_5bXhojFInwiWI49ew"
 DOMAIN = 'localhost'
 
 
@@ -19,7 +19,7 @@ class LoginTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None, database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 
@@ -39,7 +39,7 @@ class ClubTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None, database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 
@@ -92,7 +92,7 @@ class GameTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None, database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 
@@ -206,7 +206,7 @@ class EventTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None, database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 
@@ -260,19 +260,19 @@ class EventTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_get_edit_event_form(self):
-        self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
+        self.client.set_cookie(DOMAIN, 'token', ADMIN_JWT)
         newest_event = Event.query.order_by(Event.id.desc()).first()
         res = self.client.get('/events/' + str(newest_event.id) + '/edit')
         self.assertEqual(res.status_code, 200)
 
     def test_get_edit_event_form_of_event_hosted_by_another_member(self):
-        self.client.set_cookie(DOMAIN, 'token', ADMIN_JWT)
+        self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
         newest_event = Event.query.order_by(Event.id.desc()).first()
         res = self.client.get('/events/' + str(newest_event.id) + '/edit')
         self.assertEqual(res.status_code, 403)
 
     def test_edit_event(self):
-        self.client.set_cookie(DOMAIN, 'token', MEMBER_JWT)
+        self.client.set_cookie(DOMAIN, 'token', ADMIN_JWT)
         newest_event = Event.query.order_by(Event.id.desc()).first()
         res = self.client.post(
             '/events/' + str(
@@ -345,7 +345,7 @@ class MemberTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None, database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 

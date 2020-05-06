@@ -1,11 +1,12 @@
 import os
 from flask_sqlalchemy import SQLAlchemy
 
-# db_name = 'bishopgamingdb'
-# db_path = "postgres://postgres:123@{}/{}".format('localhost:5432', db_name)
+
 db_path = os.environ['DATABASE_URL']
-# comment out the line above and uncomment the line below to prepare for testing locally
-# db_path='dummy value'
+# comment out the line above
+# and uncomment the line below to prepare for local development and/or testing
+# db_path=UNCOMMENT THIS LINE AND INSERT THE PATH TO YOUR DATABASE HERE
+
 db = SQLAlchemy()
 
 
