@@ -19,7 +19,7 @@ class LoginTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 
@@ -39,7 +39,7 @@ class ClubTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 
@@ -92,7 +92,7 @@ class GameTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 
@@ -206,7 +206,7 @@ class EventTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 
@@ -345,7 +345,7 @@ class MemberTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = create_app(database_path=TEST_DB_PATH)
+        self.app = create_app(test_config=None,database_path=TEST_DB_PATH)
         self.client = self.app.test_client()
         setup_db(self.app, TEST_DB_PATH)
 

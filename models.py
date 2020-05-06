@@ -4,11 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 # db_name = 'bishopgamingdb'
 # db_path = "postgres://postgres:123@{}/{}".format('localhost:5432', db_name)
 db_path = os.environ['DATABASE_URL']
+# comment out the line above and uncomment the line below to prepare for testing locally
+# db_path='dummy value'
 db = SQLAlchemy()
 
 
 def setup_db(app, database_path=db_path):
-    app.config["SQLALCHEMY_DATABASE_URI"] = db_path
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
