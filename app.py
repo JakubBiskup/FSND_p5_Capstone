@@ -36,10 +36,9 @@ def create_app(test_config=None, database_path=db_path):
     SECRET_KEY = os.urandom(32)
     app.config['SECRET_KEY'] = SECRET_KEY
     setup_db(app, db_path)
-    
+
     CLUB_NAME = Club.query.first().name
     app.jinja_env.globals['CLUB_NAME'] = CLUB_NAME
-
 
     @app.route('/login')
     def get_continue_button():
