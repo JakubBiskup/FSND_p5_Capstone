@@ -85,7 +85,29 @@ The API may return these error types when requests fail:
 - 500: Internal Server Error
 
 ### Endpoints
-< TODO: endpoints here>
+
+##### PATCH /events/<int:event_id>/join
+This endpoint accepts only requests with PATCH method. It is used to declare that currently logged in member will participate in an event (or to declare that he has participated in an event if the event is in the past).
+Only members and admins are authorized to use this endpoint.
+On successful request, the API will append currently logged in member to event's player list and return http status code 200.
+If event has already reached max players number, this endpoint will return a 400 http status code and a json object with "success" set to False and "message" saying that 'This event has already reached maximum capacity'.
+
+##### PATCH /events/<int:event_id>/unjoin
+This endpoint accepts only requests with PATCH method. It is used to withdraw from an event.
+On successful request, the API will remove currently logged in member from event's player list and return http status code 200.
+
+##### DELETE /events/<int:event_id>/delete
+This endpoint accepts only requests with DELETE method. It is used to delete an event of that id entirely.
+Only admins are authorized to delete any event. Members are authorized to delete the events where they are the host.
+On successful request, the API will delete the event and return http status code 200.
+
+
+##### DELETE /games/<int:game_id>/unown
+This endpoint accepts only requests with DELETE method. It is used to declare that currently logged in member no longer owns a game of that id.
+On successful request, the API will return http status code 200 and remove the game from currently logged in member's collection. In case when that member is the only owner of that game, the game will be deleted entirely (and also removed from club's collection).
+
+#### Other endpoints
+All the other endpoints return either http status code 200 and a page rendered from template (usually filled with the data from the database) or http status code 302 and a redirect to another endpoint that renders a page
 
 ## Getting started with local development
 
@@ -107,10 +129,10 @@ pip install -r requirements.txt
 
 ### Running the server
 
-To run the server, execute these three lines from within the `/backend` directory:
+To run the server, execute these three lines from within the project directory:
 ```bash
-export FLASK_APP=flaskr
 export FLASK_ENV=development
+export FLASK_APP=app
 flask run
 ```
 
